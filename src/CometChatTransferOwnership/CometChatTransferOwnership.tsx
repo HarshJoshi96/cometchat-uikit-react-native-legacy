@@ -65,7 +65,7 @@ export const CometChatTransferOwnership = (
   const { theme } = useContext(CometChatContext);
 
   const {
-    title = localize("TRANSFER_OWNERSHIP"),
+    title = localize('TRANSFER_OWNERSHIP'),
     group,
     onTransferOwnership,
     transferOwnershipStyle,
@@ -93,12 +93,15 @@ export const CometChatTransferOwnership = (
         group['scope'] = GroupMemberScope.admin;
         group['owner'] = UID;
         onTransferOwnership && onTransferOwnership(group, member);
-        
+
         //message parameter removed
-        CometChatUIEventHandler.emitGroupEvent(CometChatUIEvents.ccOwnershipChanged, {
-          group,
-          newOwner: member,
-        });
+        CometChatUIEventHandler.emitGroupEvent(
+          CometChatUIEvents.ccOwnershipChanged,
+          {
+            group,
+            newOwner: member,
+          }
+        );
         onBack && onBack();
       },
       (error: any) => {
@@ -127,7 +130,7 @@ export const CometChatTransferOwnership = (
         TailView={(item: any) => {
           return (
             <View>
-              <Text style={{color: theme?.palette?.getAccent()}}>
+              <Text style={{ color: theme?.palette?.getAccent() }}>
                 {loggedInUser?.getUid() === item.owner
                   ? GroupMemberScope.owner
                   : item.scope}
@@ -143,9 +146,4 @@ export const CometChatTransferOwnership = (
       />
     </View>
   );
-};
-
-CometChatTransferOwnership.defaultProps = {
-  group: {},
-  title: localize("Transfer Ownership"), // Note: Update after localization is updated
 };

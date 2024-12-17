@@ -109,17 +109,17 @@ export const CometChatMessageInput = (
 ) => {
   const { theme } = useContext<CometChatContextType>(CometChatContext);
   const {
-    text,
-    placeHolderText,
     onChangeText,
-    style,
     maxHeight,
     SecondaryButtonView,
     AuxiliaryButtonView,
-    auxiliaryButtonAlignment,
     PrimaryButtonView,
     onSelectionChange,
-    messageInputRef
+    messageInputRef,
+    placeHolderText = localize('ENTER_YOUR_MESSAGE_HERE'),
+    auxiliaryButtonAlignment = 'right',
+    style = {},
+    text = '',
   } = props;
 
   return (
@@ -170,11 +170,4 @@ export const CometChatMessageInput = (
       </View>
     </View>
   );
-};
-
-CometChatMessageInput.defaultProps = {
-  placeHolderText: localize('ENTER_YOUR_MESSAGE_HERE'),
-  auxiliaryButtonAlignment: 'right',
-  style: {},
-  text: '',
 };

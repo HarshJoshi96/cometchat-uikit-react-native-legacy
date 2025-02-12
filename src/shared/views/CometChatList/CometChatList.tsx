@@ -118,8 +118,6 @@ export interface CometChatListProps {
   listStyle?: CometChatListStylesInterface;
   hideSubmitIcon?: boolean;
 }
-let lastCall: any;
-let lastReject: Function;
 
 /**
  * @class Users is a component useful for displaying the header and users in a list
@@ -135,6 +133,8 @@ export const CometChatList = React.forwardRef<
 >((props, ref) => {
   const connectionListenerId = 'connectionListener_' + new Date().getTime();
   const { theme } = useContext<CometChatContextType>(CometChatContext);
+  const lastCall = useRef(null);
+  const lastReject = useRef(null);
 
   const {
     SubtitleView,
@@ -611,19 +611,24 @@ export const CometChatList = React.forwardRef<
   const getList = (props: any) => {
     const promise = new Promise((resolve, reject) => {
       const cancel = () => {
-        clearTimeout(lastCall);
-        lastReject(new Error('Promise cancelled'));
+        clearTimeout(lastCall.current);
+        lastReject.current(new Error('Promise cancelled'));
       };
-      if (lastCall) {
+      if (lastCall.current) {
         cancel();
       }
 
-      lastCall = setTimeout(() => {
-        props?.fetchNext().then((listItems: any) => {
-          resolve(listItems);
-        });
+      lastCall.current = setTimeout(() => {
+        props
+          ?.fetchNext()
+          .then((listItems: any) => {
+            resolve(listItems);
+          })
+          .catch((error: any) => {
+            reject(error);
+          });
       }, 500);
-      lastReject = reject;
+      lastReject.current = reject;
     });
     return promise;
   };

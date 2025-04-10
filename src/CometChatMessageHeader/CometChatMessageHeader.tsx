@@ -34,6 +34,7 @@ import {
 } from '../shared/constants/UIKitConstants';
 import { CometChatContextType } from '../shared/base/Types';
 import { CometChatUIEventHandler } from '../shared/events/CometChatUIEventHandler/CometChatUIEventHandler';
+import { CommonUtils } from '../shared/utils/CommonUtils';
 export interface MessageHeaderStyleInterface {
   width?: string | number;
   height?: string | number;
@@ -195,6 +196,7 @@ export const CometChatMessageHeader = (
   const userStatusListenerId = 'user_status_' + new Date().getTime();
   const msgTypingListenerId = 'message_typing_' + new Date().getTime();
   const groupListenerId = 'head_group_' + new Date().getTime();
+  const userListenerId = 'head_user_' + new Date().getTime();
 
   const {
     SubtitleView,
@@ -228,9 +230,7 @@ export const CometChatMessageHeader = (
   });
 
   const [groupObj, setGroupObj] = useState(group);
-  const [userStatus, setUserStatus] = useState(
-    user && user.getStatus ? user.getStatus() : ''
-  );
+  const [userStatus, setUserStatus] = useState('');
   const [typingText, setTypingText] = useState('');
 
   const receiverTypeRef = useRef(
@@ -246,7 +246,13 @@ export const CometChatMessageHeader = (
   }, [group]);
 
   useEffect(() => {
-    setUserStatus(user ? user.getStatus() : '');
+    if (user) {
+      if (!(user.getHasBlockedMe() || user.getBlockedByMe())) {
+        setUserStatus(user.getStatus());
+        return;
+      }
+      setUserStatus('');
+    }
   }, [user]);
 
   const BackButton = () => {
@@ -286,6 +292,23 @@ export const CometChatMessageHeader = (
         </Text>
       );
     if (disableUsersPresence) return null;
+
+    const subtitleText =
+      receiverTypeRef.current === CometChat.RECEIVER_TYPE.GROUP &&
+       groupObj?.["membersCount"]
+      ? groupObj["membersCount"] === 1
+        ? `1 ${localize("MEMBER")}`
+        : `${groupObj["membersCount"]} ${localize("MEMBERS")}`
+        : receiverTypeRef.current === CometChat.RECEIVER_TYPE.USER
+        ? userStatus === UserStatusConstants.online
+          ? localize('ONLINE')
+          : userStatus === UserStatusConstants.offline
+          ? localize('OFFLINE')
+          : ''
+        : '';
+
+    if (!subtitleText) return null;
+
     return (
       <Text
       style={[
@@ -293,21 +316,23 @@ export const CometChatMessageHeader = (
         style.subtitleTextFont ?? theme.typography.subtitle1,
       ]}
       >
-        {receiverTypeRef.current === CometChat.RECEIVER_TYPE.GROUP &&
-        (groupObj?.['membersCount'] || groupObj?.['membersCount'] === 0)
-          ? `${groupObj['membersCount']} ${localize('MEMBERS')}`
-          : receiverTypeRef.current === CometChat.RECEIVER_TYPE.USER
-          ? userStatus === UserStatusConstants.online
-            ? localize('ONLINE')
-            : localize('OFFLINE')
-          : ''}
+        {subtitleText}
       </Text>
     );
   };
 
-  const handleUserStatus = (userDetails: any) => {
-    if (userDetails.uid === user?.getUid()) setUserStatus(userDetails.status);
-  };
+  const handleUserStatus = useCallback(
+    (userDetails: any) => {
+      if (userDetails.uid === user?.getUid()) {
+        if (user.getHasBlockedMe() || user.getBlockedByMe()) {
+          setUserStatus('');
+          return;
+        }
+        setUserStatus(userDetails.status);
+      }
+    },
+    [user]
+  );
 
   const msgTypingIndicator = (typist: any, status: string) => {
     if (
@@ -323,7 +348,8 @@ export const CometChatMessageHeader = (
     } else if (
       receiverTypeRef.current === CometChat.RECEIVER_TYPE.USER &&
       receiverTypeRef.current === typist.receiverType &&
-      user?.getUid() === typist.sender.uid
+      user?.getUid() === typist.sender.uid &&
+      !(user?.getBlockedByMe() || user?.getHasBlockedMe())
     ) {
       setTypingText(status === 'typing' ? localize('TYPING') : '');
     }
@@ -366,7 +392,7 @@ export const CometChatMessageHeader = (
       }
       listners.removeListner.removeMessageListener({ msgTypingListenerId });
     };
-  }, []);
+  }, [user]);
 
   const handleGroupMemberKicked = ({
     message,
@@ -408,16 +434,49 @@ export const CometChatMessageHeader = (
     };
   }, []);
 
+  useEffect(() => {
+    CometChatUIEventHandler.addUserListener(userListenerId, {
+      ccUserBlocked: ({ user: blockedUser }: { user: CometChat.User }) => {
+        if (user.getUid() === blockedUser.getUid()) {
+          setUserStatus('');
+        }
+      },
+      ccUserUnBlocked: ({ user: unblockedUser }: { user: CometChat.User }) => {
+        if (user.getUid() !== unblockedUser.getUid()) {
+          return;
+        }
+        setUserStatus(unblockedUser.getStatus());
+      },
+    });
+    return () => {
+      CometChatUIEventHandler.removeUserListener(userListenerId);
+    };
+  }, [user]);
+
   const AppBarOptionsView = useCallback(() => {
+    /*************Start Of: This is required for the below scenario***********/
+    // user(prop) is online
+    // on blocking the user, userStatus is updated to offline and this has to be passed to Details
+    // user status in original user prop (for example, the reference in conversation -> conversationWith) is updated to offline on blocking but will only be propagated to MessageHeader on reopening Messages
+    let clonedUser: CometChat.User;
+    if (user) {
+      clonedUser = CommonUtils.clone(user);
+      clonedUser.setStatus(userStatus);
+    }
+    /*************End Of: This is required for the below scenario***********/
     if (AppBarOptions) {
       return (
         <AppBarOptions
-          {...(user ? { user } : groupObj ? { group: groupObj } : {})}
+          {...(user
+            ? { user: clonedUser }
+            : groupObj
+            ? { group: groupObj }
+            : {})}
         />
       );
     }
     return null;
-  }, [user?.getUid(), groupObj?.getGuid()]);
+  }, [userStatus, user, groupObj]);
 
   return (
     <View

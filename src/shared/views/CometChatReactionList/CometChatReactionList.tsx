@@ -147,6 +147,7 @@ export const CometChatReactionList = (props: CometChatReactionListInterface) => 
             return list;
         } catch (error: any) {
             console.log("error while fetching reactions", error)
+            // if (error?.code === "REQUEST_IN_PROGRESS") return;
             setState("error");
             return [];
         }
@@ -281,7 +282,7 @@ export const CometChatReactionList = (props: CometChatReactionListInterface) => 
             justifyContent: "center",
             alignItems: "center",
         }}>
-            <ActivityIndicator size={"large"} color={loadingTint} />
+            <ActivityIndicator size={"large"} color={'black'} />
         </View>
     }
 

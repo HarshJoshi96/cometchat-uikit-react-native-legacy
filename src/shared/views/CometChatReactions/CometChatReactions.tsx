@@ -28,9 +28,9 @@ const CometChatReactions = (props: CometChatReactionsInterface) => {
   const reactionRef = React.useRef<any[]>([]);
 
   const _style = new ReactionsStyle({
-    emojiFont: style?.emojiFont || theme?.typography?.text1,
+    emojiFont: style?.emojiFont || theme?.typography?.subtitle1,
     countColor: style?.countColor || theme?.palette?.getAccent(),
-    countFont: style?.countFont || theme?.typography?.text1,
+    countFont: style?.countFont || theme?.typography?.subtitle1,
     backgroundColor: style?.backgroundColor || theme?.palette?.getAccent100(),
     primaryBackgroundColor: style?.primaryBackgroundColor || theme?.palette?.getPrimary150(),
     primaryBorder: style?.primaryBorder || {

@@ -9,7 +9,8 @@ import { StatusIndicatorStyleInterface } from '../shared/views/CometChatStatusIn
 import { CometChatUsersInterface } from './CometChatUsers';
 //@ts-ignore
 import { CometChat } from '@cometchat/chat-sdk-react-native';
-import { UsersStyleInterface } from './UsersStyle'
+import { UsersStyleInterface } from "./UsersStyle"
+
 
 export interface UsersConfigurationInterface
   extends Omit<

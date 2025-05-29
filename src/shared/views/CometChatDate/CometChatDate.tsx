@@ -85,7 +85,8 @@ export const CometChatDate = (props: CometChatDateInterface) => {
     ...props.style,
   };
 
-  let date = new Date(timeStamp);
+  // let date = new Date(timeStamp);
+  let date = timeStamp ? new Date(timeStamp) : new Date();
 
   const getWeekOfDay = () => {
     let weekDay = date.getDay();

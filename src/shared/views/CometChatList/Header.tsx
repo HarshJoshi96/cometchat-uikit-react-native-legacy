@@ -1,6 +1,6 @@
 //@ts-ignore
 import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './styles';
 import { ICONS } from './resources';
 
@@ -31,6 +31,7 @@ export default function Header({
   searchIconTint,
   searchBackground,
   selectionIconTint,
+  CreateGroupView,
 }: any) {
   return (
     <View style={styles.listBaseHeaderStyle}>
@@ -48,10 +49,8 @@ export default function Header({
                       ? backButtonIcon
                       : ICONS.BACK
                   }
-                  style={[
-                    styles.backButtonStyle,
-                    { tintColor: backIconTint ?? '' },
-                  ]}
+                  resizeMode='contain'
+                  style={styles.backButtonStyle}
                 />
               </TouchableOpacity>
             ) : null}
@@ -59,9 +58,8 @@ export default function Header({
               ellipsizeMode="tail"
               numberOfLines={1}
               style={[
-                styles.titleStyle,
-                { color: titleColor ?? '' },
-                titleFontStyle ?? {},
+                titleFontStyle,
+                {color : titleColor}
               ]}
             >
               {title}
@@ -75,7 +73,7 @@ export default function Header({
         )}
         {shouldSelect && !hideSubmitIcon &&(
           <View>
-            <TouchableOpacity onPress={onSelectionHandler}>
+            <TouchableOpacity onPress={onSelectionHandler} style={{paddingRight: 15}}>
               <Image
                 source={
                   typeof selectionIcon == 'string'
@@ -86,14 +84,16 @@ export default function Header({
                     : ICONS.CHECK_MARK
                 }
                 style={[
-                  styles.backButtonStyle,
-                  { tintColor: selectionIconTint ?? '' },
+                  styles.selectionIcon,
+                  { tintColor: '#247BA0'},
                 ]}
+                resizeMode='contain'
               />
             </TouchableOpacity>
           </View>
         )}
       </View>
+      {CreateGroupView && <CreateGroupView/>}
       {!hideSearch && (
         <View
           style={[

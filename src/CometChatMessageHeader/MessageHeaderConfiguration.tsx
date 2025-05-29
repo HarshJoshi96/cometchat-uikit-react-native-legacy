@@ -36,6 +36,8 @@ export class MessageHeaderConfiguration {
   }) => JSX.Element;
   style?: MessageHeaderStyleInterface;
   backButtonIcon?: ImageType;
+  infoIcon?:ImageType;
+  selectionIcon? :ImageType;
   hideBackIcon?: boolean;
   ListItemView?: ({
     user,

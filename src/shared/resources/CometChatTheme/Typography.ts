@@ -63,25 +63,25 @@ class Typography {
     heading = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightBold,
-      fontSize: 22,
+      fontSize: 20,
     }),
 
     heading2 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightBold,
-      fontSize: 20,
+      fontSize: 18,
     }),
 
     heading3 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightBold,
-      fontSize: 18,
+      fontSize: 16,
     }),
 
     name = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightMedium,
-      fontSize: 16,
+      fontSize: 14,
     }),
 
     title1 = new FontStyle({
@@ -99,71 +99,71 @@ class Typography {
     subtitle1 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 15,
+      fontSize: 12,
     }),
 
     subtitle2 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 13,
+      fontSize: 11,
     }),
 
     subtitle3 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 12,
+      fontSize: 10,
     }),
     
     subtitle4 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 11,
+      fontSize: 9,
     }),
 
     subtitle5 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 10,
+      fontSize: 8,
     }),
 
     subtitle6 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 9,
+      fontSize: 7,
     }),
 
     text1 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightMedium,
-      fontSize: 15,
+      fontSize: 13,
     }),
 
     text2 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightMedium,
-      fontSize: 13,
+      fontSize: 11,
     }),
 
     caption1 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightMedium,
-      fontSize: 12,
+      fontSize: 10,
     }),
 
     caption2 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightMedium,
-      fontSize: 11,
+      fontSize: 9,
     }),
     caption3 = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 8,
+      fontSize: 7,
     }),
     body = new FontStyle({
       fontFamily: fontFamily,
       fontWeight: fontWeightRegular,
-      fontSize: 17,
+      fontSize: 16,
     }),
   }: any) {
     this.fontFamily = fontFamily;
@@ -220,6 +220,9 @@ class Typography {
     if (headingFont && headingFont.fontWeight) {
       this.heading.fontWeight = headingFont.fontWeight;
     }
+    if (headingFont && headingFont.fontFamily) {
+      this.heading.fontFamily = headingFont.fontFamily;
+    }
   }
 
   setHeading2(headingFont: any) {
@@ -229,6 +232,9 @@ class Typography {
 
     if (headingFont && headingFont.fontWeight) {
       this.heading2.fontWeight = headingFont.fontWeight;
+    }
+    if (headingFont && headingFont.fontFamily) {
+      this.heading.fontFamily = headingFont.fontFamily;
     }
   }
 
@@ -240,6 +246,9 @@ class Typography {
     if (headingFont && headingFont.fontWeight) {
       this.heading3.fontWeight = headingFont.fontWeight;
     }
+    if (headingFont && headingFont.fontFamily) {
+      this.heading.fontFamily = headingFont.fontFamily;
+    }
   }
 
   setName(nameFont: any) {
@@ -249,6 +258,10 @@ class Typography {
 
     if (nameFont && nameFont.fontWeight) {
       this.name.fontWeight = nameFont.fontWeight;
+    }
+
+    if (nameFont && nameFont.fontFamily) {
+      this.name.fontFamily = nameFont.fontFamily;
     }
   }
 
@@ -260,6 +273,10 @@ class Typography {
     if (titleFont && titleFont.fontWeight) {
       this.title1.fontWeight = titleFont.fontWeight;
     }
+
+    if (titleFont && titleFont.fontFamily) {
+      this.title1.fontFamily = titleFont.fontFamily;
+    }
   }
 
   setTitle2(titleFont: any) {
@@ -269,6 +286,10 @@ class Typography {
 
     if (titleFont && titleFont.fontWeight) {
       this.title2.fontWeight = titleFont.fontWeight;
+    }
+
+    if (titleFont && titleFont.fontFamily) {
+      this.title2.fontFamily = titleFont.fontFamily;
     }
   }
 
@@ -280,6 +301,10 @@ class Typography {
     if (subtitleFont && subtitleFont.fontWeight) {
       this.subtitle1.fontWeight = subtitleFont.fontWeight;
     }
+
+    if (subtitleFont && subtitleFont.fontFamily) {
+      this.subtitle1.fontFamily = subtitleFont.fontFamily;
+    }
   }
 
   setSubtitle2(subtitleFont: any) {
@@ -289,6 +314,9 @@ class Typography {
 
     if (subtitleFont && subtitleFont.fontWeight) {
       this.subtitle2.fontWeight = subtitleFont.fontWeight;
+    }
+    if (subtitleFont && subtitleFont.fontFamily) {
+      this.subtitle2.fontFamily = subtitleFont.fontFamily;
     }
   }
 
@@ -300,6 +328,10 @@ class Typography {
     if (subtitleFont && subtitleFont.fontWeight) {
       this.subtitle3.fontWeight = subtitleFont.fontWeight;
     }
+
+    if (subtitleFont && subtitleFont.fontFamily) {
+      this.subtitle3.fontFamily = subtitleFont.fontFamily;
+    }
   }
 
   setSubtitle4(subtitleFont: any) {
@@ -309,6 +341,10 @@ class Typography {
 
     if (subtitleFont && subtitleFont.fontWeight) {
       this.subtitle4.fontWeight = subtitleFont.fontWeight;
+    }
+
+    if (subtitleFont && subtitleFont.fontFamily) {
+      this.subtitle4.fontFamily = subtitleFont.fontFamily;
     }
   }
 
@@ -320,6 +356,9 @@ class Typography {
     if (subtitleFont && subtitleFont.fontWeight) {
       this.subtitle5.fontWeight = subtitleFont.fontWeight;
     }
+    if (subtitleFont && subtitleFont.fontFamily) {
+      this.subtitle5.fontFamily = subtitleFont.fontFamily;
+    }
   }
 
   setSubtitle6(subtitleFont: any) {
@@ -329,6 +368,9 @@ class Typography {
 
     if (subtitleFont && subtitleFont.fontWeight) {
       this.subtitle6.fontWeight = subtitleFont.fontWeight;
+    }
+    if (subtitleFont && subtitleFont.fontFamily) {
+      this.subtitle6.fontFamily = subtitleFont.fontFamily;
     }
   }
 
@@ -360,6 +402,10 @@ class Typography {
     if (captionFont && captionFont.fontWeight) {
       this.caption1.fontWeight = captionFont.fontWeight;
     }
+
+    if (captionFont && captionFont.fontFamily) {
+      this.caption1.fontFamily = captionFont.fontFamily;
+    }
   }
 
   setCaption2(captionFont: any) {
@@ -369,6 +415,9 @@ class Typography {
 
     if (captionFont && captionFont.fontWeight) {
       this.caption2.fontWeight = captionFont.fontWeight;
+    }
+    if (captionFont && captionFont.fontFamily) {
+      this.caption2.fontFamily = captionFont.fontFamily;
     }
   }
 
@@ -380,6 +429,9 @@ class Typography {
     if (captionFont && captionFont.fontWeight) {
       this.caption3.fontWeight = captionFont.fontWeight;
     }
+    if (captionFont && captionFont.fontFamily) {
+      this.caption3.fontFamily = captionFont.fontFamily;
+    }
   }
 
   setBody(bodyFont: any) {
@@ -389,6 +441,9 @@ class Typography {
 
     if (bodyFont && bodyFont.fontWeight) {
       this.body.fontWeight = bodyFont.fontWeight;
+    }
+    if (bodyFont && bodyFont.fontFamily) {
+      this.body.fontFamily = bodyFont.fontFamily;
     }
   }
 }

@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useRef, useState, useImperativeHandle, useContext, useCallback, memo, useLayoutEffect } from "react";
-import { View, FlatList, Text, Image, TouchableOpacity, ActivityIndicator, Modal, SafeAreaView, NativeModules, ScrollView, Dimensions, Platform, Keyboard, TextStyle, ViewProps } from "react-native";
+import { View, FlatList, Text, Image, TouchableOpacity, ActivityIndicator, Modal, SafeAreaView, NativeModules, ScrollView, Dimensions, Platform, Keyboard, TextStyle, ViewProps, Alert } from "react-native";
 //@ts-ignore
 import { CometChat } from "@cometchat/chat-sdk-react-native";
 import { LeftArrowCurve, RightArrowCurve } from "./resources";
@@ -36,6 +36,8 @@ import { CommonUtils } from "../shared/utils/CommonUtils";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { commonVars } from "../shared/base/vars";
 import { anyObject } from "../shared/utils";
+import { NetworkContext } from "../../../../../src/contextProvider/networkProvider";
+
 
 let templatesMap = new Map<string, CometChatMessageTemplate>();
 
@@ -258,43 +260,44 @@ export const CometChatMessageList = memo(forwardRef<
         }, []);
 
         const { theme } = useContext<CometChatContextType>(CometChatContext);
-        let Keyboard_Height = 0;
-        let scrollPos = 0;
+        // let Keyboard_Height = 0;
+        // let scrollPos = 0;
 
         // creating style based on styles from users
         const _messageListStyle = useRef(new MessageListStyle({
-            backgroundColor: theme?.palette.getBackgroundColor(),
+            backgroundColor: theme?.palette.getSecondary(),
             emptyStateTextColor: theme?.palette.getError(),
             emptyStateTextFont: theme?.typography.subtitle1,
             errorStateTextColor: theme?.palette.getAccent(),
             errorStateTextFont: theme?.typography.title1,
             loadingIconTint: theme?.palette.getPrimary(),
-            nameTextColor: theme?.palette.getAccent(),
-            nameTextFont: theme?.typography.name,
+            nameTextColor: theme?.palette.getSecondary(),
+            nameTextFont: theme?.typography.body,
             threadReplyIconTint: theme?.palette.getAccent700(),
             threadReplySeparatorColor: theme?.palette.getAccent100(),
             threadReplyTextColor: theme?.palette.getPrimary(),
             threadReplyTextFont: theme?.typography.body,
-            timestampTextColor: theme?.palette.getAccent500(),
+            timestampTextColor: theme?.palette.getAccent600(),
             timestampTextFont: theme?.typography.caption1,
             ...messageListStyle
         })).current;
         const _avatarStyle = useRef(new AvatarStyle({
             nameTextColor: _messageListStyle.nameTextColor,
             nameTextFont: _messageListStyle.nameTextFont,
+            backgroundColor : theme.palette.getPrimary(),
             ...avatarStyle
         })).current;
         const _dateSeperatorStyle = useRef(new DateStyle({
             textColor: _messageListStyle.timestampTextColor,
-            textFont: theme?.typography.title2,
+            textFont: theme?.typography.caption1,
             ...dateSeperatorStyle
         })).current;
         const messageBubbleDateStyle = useRef(new DateStyle({
-            textColor: _messageListStyle.timestampTextColor,
+            textColor: theme.palette.getAccent500(),
             textFont: _messageListStyle.timestampTextFont
         })).current;
         const _actionStyle = useRef(new ActionSheetStyles({
-            backgroundColor: theme?.palette?.getBackgroundColor(),
+            actionSheetSeparatorTint: 'transparent',
             ...actionSheetStyle
         })).current;
         const _messageBubbleStyle = useRef(new MessageBubbleStyle({
@@ -677,7 +680,7 @@ export const CometChatMessageList = memo(forwardRef<
         }
         function checkSameConversation(message: CometChat.BaseMessage): boolean {
             return message.getConversationId() == conversationId.current || 
-                  (message.getSender()?.getUid() === user?.getUid() && message.getReceiverType() == CometChatUiKitConstants.ReceiverTypeConstants.user);
+                (message.getSender()?.getUid() === user?.getUid() && message.getReceiverType() == CometChatUiKitConstants.ReceiverTypeConstants.user);
         }
 
         function isNearBottom() {
@@ -700,8 +703,8 @@ export const CometChatMessageList = memo(forwardRef<
             }
             if (checkSameConversation(baseMessage) || checkMessageInSameConversation(baseMessage) || messageToSameConversation(baseMessage)) {
                 if(!disableReceipt) {
-                  CometChat.markAsDelivered(newMessage);
-                }
+                    CometChat.markAsDelivered(newMessage);
+                  }
                 //need to add
                 if (newMessage.getParentMessageId()) {
                     if (parentMessageId && newMessage.getParentMessageId() == parseInt(parentMessageId)) {
@@ -794,7 +797,7 @@ export const CometChatMessageList = memo(forwardRef<
             let condition: (value: any, index: number, obj: any[]) => unknown;
             if (withMuid) {
                 condition = (msg) => msg['muid'] == editedMessage['muid']
-                //inProgressMessages.current = inProgressMessages.current.filter((item: anyObject) => item.muid !== editedMessage['muid'])
+                // inProgressMessages.current = inProgressMessages.current.filter((item: anyObject) => item.muid !== editedMessage['muid'])
             }
             else
                 condition = (msg) => msg.getId() == editedMessage.getId()
@@ -850,7 +853,8 @@ export const CometChatMessageList = memo(forwardRef<
 
                 let tmpMsg = tmpList[i];
                 if (!Number.isNaN(Number(tmpMsg.getId()))) {
-
+                    if ((tmpMsg as CometChat.BaseMessage)?.getReceiverType() == ReceiverTypeConstants.group)
+                        return;
                     if (tmpMsg.getCategory() === MessageCategoryConstants.interactive) {
                         tmpMsg = InteractiveMessageUtils.convertInteractiveMessage(tmpMsg);
                     }
@@ -881,8 +885,8 @@ export const CometChatMessageList = memo(forwardRef<
 
         useEffect(() => {
 
-            const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => onKeyboardVisibiltyChange(true, e?.endCoordinates?.height));
-            const hideSubscription = Keyboard.addListener('keyboardDidHide', () => onKeyboardVisibiltyChange(false));
+            // const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => onKeyboardVisibiltyChange(true, e?.endCoordinates?.height));
+            // const hideSubscription = Keyboard.addListener('keyboardDidHide', () => onKeyboardVisibiltyChange(false));
 
             CometChatUIEventHandler.addUIListener(
                 uiEventListenerShow,
@@ -918,8 +922,8 @@ export const CometChatMessageList = memo(forwardRef<
                 });
 
             return () => {
-                showSubscription.remove();
-                hideSubscription.remove();
+                // showSubscription.remove();
+                // hideSubscription.remove();
                 CometChatUIEventHandler.removeUIListener(uiEventListenerShow)
                 CometChatUIEventHandler.removeUIListener(uiEventListenerHide)
                 CometChatUIEventHandler.removeUIListener(uiEventListener);
@@ -1139,8 +1143,8 @@ export const CometChatMessageList = memo(forwardRef<
                 new CometChat.ConnectionListener({
                     onConnected: () => {
                         if(lastID.current) {
-                           getUpdatedPreviousMessages();
-                        }
+                            getUpdatedPreviousMessages();
+                         }
                     },
                     inConnecting: () => {
                     },
@@ -1204,6 +1208,7 @@ export const CometChatMessageList = memo(forwardRef<
                     messageListRef.current.scrollTo({ y: scrollPos, animated: false })
                     isKeyBoardVisible.current = true;
                 } else {
+                    // messageListRef.current.scrollTo({ y: scrollPos - Keyboard_Height + ((commonVars.safeAreaInsets.top as number) / 2), animated: false })
                     isKeyBoardVisible.current = false;
                     /**
                      * Do not have to scroll back if the list is at the bottom because we are already adjusting 
@@ -1303,8 +1308,10 @@ export const CometChatMessageList = memo(forwardRef<
             return (
                 <View style={{ flexDirection: "row" }}>
                     {Boolean(senderName) && <Text style={[Style.nameStyle, {
-                        color: _messageListStyle.nameTextColor,
-                        ..._messageListStyle.nameTextFont,
+                        color: theme.palette.getTertiary(),
+                        ...theme.typography.heading,
+                        fontSize : 12,
+                        lineHeight : 17,
                     }] as TextStyle} numberOfLines={1} ellipsizeMode={"tail"} >{senderName}</Text>}
                     {
                         timeStampAlignment == "bottom" || item['category'] == "action" ?
@@ -1347,15 +1354,15 @@ export const CometChatMessageList = memo(forwardRef<
             let isAudioVideo = (item?.getType() === "image" || item?.getType() === "video");
             return <View style={[
                 isAudioVideo ? {
-                    flexDirection: "row", justifyContent: bubbleAlignment === "right" ? "flex-end" : "flex-start", alignSelf: "flex-end", paddingVertical: 2, paddingHorizontal: 5,
-                    position: "absolute", borderRadius: 10, backgroundColor: theme.palette.getAccent500("dark"), zIndex: 1, bottom: 5, right: 5,
+                    flexDirection: "row", justifyContent: bubbleAlignment === "right" ? "flex-end" : "flex-start", alignSelf: "flex-end", paddingHorizontal: 5,paddingVertical : 3,
+                    position: "absolute", borderRadius: 10, zIndex: 1, backgroundColor : 'rgba(0,0,0,0.1)', bottom : 0, right : 6
                 }
                     :
-                    { flexDirection: "row", justifyContent: bubbleAlignment === "right" ? "flex-end" : "flex-start", alignSelf: "flex-end", padding: 5 }
+                    { flexDirection: "row", justifyContent: bubbleAlignment === "right" ? "flex-end" : "flex-start", alignSelf: "flex-end", padding: 5, }
             ]}>
                 <CometChatDate
                     timeStamp={((item.getDeletedAt() || item.getReadAt() || item.getDeliveredAt() || item.getSentAt()) * 1000) || getSentAtTimestamp(item)}
-                    style={{ ...messageBubbleDateStyle, textFont: isAudioVideo ? theme.typography.caption3 : messageBubbleDateStyle.textFont }}
+                    style={{ ...messageBubbleDateStyle,textColor : isAudioVideo ? theme.palette.getSecondary() : messageBubbleDateStyle.textColor }}
                     pattern={"timeFormat"}
                     customDateString={datePattern && datePattern(item)}
                     dateAlignment="center"
@@ -1371,9 +1378,8 @@ export const CometChatMessageList = memo(forwardRef<
                                 waitIcon={waitIcon}
                                 errorIcon={errorIcon}
                                 style={{
-                                    tintColor: (messageState === "READ" && item?.getType() === "text") ? theme.palette.getBackgroundColor() :
-                                        messageState === "WAIT" ? theme?.palette?.getAccent400() : undefined,
-                                    ...(isAudioVideo ? {height: 8, width: 10} : {})
+                                    height: messageState==='WAIT' ? 15 :  13, width:  messageState==='WAIT' ? 15 :  13,
+                                    tintColor: (messageState === "READ") ? theme.palette.getPrimary() : '#999999',
                                 }}
                             />
                         </View>
@@ -1551,7 +1557,7 @@ export const CometChatMessageList = memo(forwardRef<
             }
 
             if ((item.getSender()?.getUid() || item?.['sender']?.['uid']) == loggedInUser.current?.['uid'])
-                _style.backgroundColor = (alignment !== "leftAligned" && (item.getType() === MessageTypeConstants.text || item.getType() === MessageTypeConstants.meeting)) ? theme?.palette.getPrimary() : theme?.palette.getAccent50();
+                _style.backgroundColor = (alignment !== "leftAligned" && (item.getType() === MessageTypeConstants.text || item.getType() === MessageTypeConstants.meeting)) ? theme?.palette.getAccent100() : theme?.palette.getAccent50();
 
             if (item?.getDeletedBy()) {
                 _style.backgroundColor = 'transparent';
@@ -1644,7 +1650,13 @@ export const CometChatMessageList = memo(forwardRef<
 
         const openOptionsForMessage = useCallback((item: CometChat.BaseMessage | any, template: CometChatMessageTemplate) => {
             let options = template?.options ? loggedInUser.current ? template.options(loggedInUser.current, item, group) : [] : [];
-            let optionsWithPressHandling = options.map(option => {
+            //Remove below filter if need to add sendMessagePrivately feature.
+            let updatedOption = options?.filter((el) => el?.id != 'sendMessagePrivately')
+
+            updatedOption = updatedOption.filter((el) => loggedInUser.current?.getUid() != item?.getSender()?.getUid() ?  el?.id != 'editMessage' : el )
+
+            let optionsWithPressHandling = updatedOption.map(option => {
+            // let optionsWithPressHandling = options.map(option => {
                 if (!option.onPress){
                     switch (option.id) {
                         case MessageOptionConstants.messageInformation:
@@ -1694,6 +1706,7 @@ export const CometChatMessageList = memo(forwardRef<
         }, [])
 
         const MessageView = useCallback((params: { message: CometChat.BaseMessage, showOptions?: boolean, isThreaded?: boolean, currentIndex?: number }) => {
+            const { isConnected} = useContext(NetworkContext);
             const { message, showOptions = true, isThreaded = false, currentIndex } = params;
             let hasTemplate = templatesMap.get(`${message.getCategory()}_${message.getType()}`)
             if (templates?.length > 0) {
@@ -1708,9 +1721,13 @@ export const CometChatMessageList = memo(forwardRef<
                 let bubbleAlignment: MessageBubbleAlignmentType = getAlignment(message);
 
                 const onLongPress = () => {
-                    if (message.getDeletedBy() != null) return;
-                    setSelectedMessage(message)
-                    hasTemplate && openOptionsForMessage(message, hasTemplate)
+                    if(isConnected) {    
+                        if (message.getDeletedBy() != null) return;
+                        setSelectedMessage(message)
+                        openOptionsForMessage(message, hasTemplate)
+                    } else {
+                    Alert.alert("No Internet Connection", "Please check your internet connection and try again.");
+                    }
                 }
 
                 return <TouchableOpacity activeOpacity={1} onLongPress={() => showOptions ? onLongPress() : undefined} >
@@ -1863,8 +1880,7 @@ export const CometChatMessageList = memo(forwardRef<
                             <Text
                                 style={[
                                     Style.msgTxtStyle, {
-                                        ...(messageListStyle?.emptyStateTextFont),
-                                        color: messageListStyle?.emptyStateTextColor
+                                        ...theme.typography.name
                                     }] as TextStyle}
                             >
                                 {emptyStateText}
@@ -1930,51 +1946,50 @@ export const CometChatMessageList = memo(forwardRef<
                     currentScrollPosition.current.scrollViewHeight = contentHeight;
                 }
             }
-            
-            /**
+                        /**
              * If Keyboard is open, recalculate the scroll position when content size changes
              */
-            if(isKeyBoardVisible.current == true) {
-                /**
-                 * WITHOUT the isAtBottom() check, the following will happen:
-                 *   1. nearToBottom() is true (which is up to 2 messages from bottom)
-                 *   2. A new message is received (or any event that changes the content size) 
-                        but the UI issue is mainly with a new message
-                 *   3. Since the content size has increased, we are not nearToBotom() anymore
-                        and so the unread banner will be displayed to click and scroll to bottom
-                 *   4. If there's not isAtBottomCheck() below, `onKeyboardVisibilityChange()` runs
-                        to adjust for the change in content size and this triggers a scroll
-                        messageListRef.current.scrollTo({ y: scrollPos, animated: false })
-                 *   5. And the nearToBottom() is true again since we have accounted for the change
-                        in contentSize and the banner disappears and the list scrolls to the bottom
-                 *
-                 * The above breaks the UI!
-                 */
-
-                /**
-                 * Why not do this for isAtBottom() || !isNearBottom()?
-                 *    - (isAtBottom() || !isNearBottom()) means notAtBottom() and notNearBottom()
-                         This means there's content under the keyboard but that's not the end. 
-                         Everytime a new message is received contentSize will change and that will
-                         trigger a position recalculation and a scroll and the list will keep scrolling
-                         till we reach bottom (that is if we keep receiving messages).
-                 * 
-                 */
-                if (isAtBottom()) {            
-                   /** 
-                    *  Why is this required?
-                    *    1. Let's say the scroll is nearToBottom() and the keyboard is open
-                    *    2. User receives a new message and the content size changes.
-                    *    3. The Message List scrolls to the bottom since the scroll was nearToBottom()
-                    *    4. User closes the keyboard and the list scrolls back to the previous message
-                    *       that was nearToBottom()
-                    *    5. The position to scroll back to needs to be recalculated since the contentSize
-                            has changed. Calling `onKeyboardVisibiltyChange()` does this.
-                    *  
-                    */       
-                    onKeyboardVisibiltyChange(true, Keyboard_Height);
-                }
-            }
+                        if(isKeyBoardVisible.current == true) {
+                            /**
+                             * WITHOUT the isAtBottom() check, the following will happen:
+                             *   1. nearToBottom() is true (which is up to 2 messages from bottom)
+                             *   2. A new message is received (or any event that changes the content size) 
+                                    but the UI issue is mainly with a new message
+                             *   3. Since the content size has increased, we are not nearToBotom() anymore
+                                    and so the unread banner will be displayed to click and scroll to bottom
+                             *   4. If there's not isAtBottomCheck() below, `onKeyboardVisibilityChange()` runs
+                                    to adjust for the change in content size and this triggers a scroll
+                                    messageListRef.current.scrollTo({ y: scrollPos, animated: false })
+                             *   5. And the nearToBottom() is true again since we have accounted for the change
+                                    in contentSize and the banner disappears and the list scrolls to the bottom
+                             *
+                             * The above breaks the UI!
+                             */
+            
+                            /**
+                             * Why not do this for isAtBottom() || !isNearBottom()?
+                             *    - (isAtBottom() || !isNearBottom()) means notAtBottom() and notNearBottom()
+                                     This means there's content under the keyboard but that's not the end. 
+                                     Everytime a new message is received contentSize will change and that will
+                                     trigger a position recalculation and a scroll and the list will keep scrolling
+                                     till we reach bottom (that is if we keep receiving messages).
+                             * 
+                             */
+                            if (isAtBottom()) {            
+                               /** 
+                                *  Why is this required?
+                                *    1. Let's say the scroll is nearToBottom() and the keyboard is open
+                                *    2. User receives a new message and the content size changes.
+                                *    3. The Message List scrolls to the bottom since the scroll was nearToBottom()
+                                *    4. User closes the keyboard and the list scrolls back to the previous message
+                                *       that was nearToBottom()
+                                *    5. The position to scroll back to needs to be recalculated since the contentSize
+                                        has changed. Calling `onKeyboardVisibiltyChange()` does this.
+                                *  
+                                */       
+                                onKeyboardVisibiltyChange(true, Keyboard_Height);
+                            }
+                        }
         }, [])
 
         const {
@@ -1988,7 +2003,7 @@ export const CometChatMessageList = memo(forwardRef<
         return (
             <View style={{
                 height, width, backgroundColor, borderRadius, ...border,
-                paddingStart: 8, paddingEnd: 8,
+                paddingStart: 8, paddingEnd: 8,marginTop:10,
             } as ViewProps}>
                 {
                     listState == "loading" && messagesList.length == 0 ?
@@ -2035,7 +2050,7 @@ export const CometChatMessageList = memo(forwardRef<
                                                     // .reverse()
                                                     .map((item, index) => (
                                                         <View
-                                                            key={keyExtractor(item)}>
+                                                            key={index}>
                                                             <RenderMessageItem item={item} index={index} />
                                                             {itemSeperator()}
                                                         </View>
@@ -2066,7 +2081,7 @@ export const CometChatMessageList = memo(forwardRef<
                         <TouchableOpacity
                             onPress={newMsgIndicatorPressed.bind(this)}
                             style={Style.newMessageIndicatorStyle}>
-                            <Text style={[Style.newMessageIndicatorText]}>
+                            <Text style={[Style.newMessageIndicatorText,theme.typography.subtitle1]}>
                                 {
                                     newMessageIndicatorText ?
                                         newMessageIndicatorText :

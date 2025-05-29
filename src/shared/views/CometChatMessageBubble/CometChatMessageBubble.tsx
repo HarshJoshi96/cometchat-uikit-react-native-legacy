@@ -109,7 +109,7 @@ export const CometChatMessageBubble = memo(({
                 {
                     LeadingView && <LeadingView />
                 }
-                <View style={{marginStart: 4, width, maxWidth: "80%"} as ViewProps}>
+                <View style={{marginStart: 8, width, maxWidth: "80%"} as ViewProps}>
                     {
                         HeaderView && <HeaderView />
                     }

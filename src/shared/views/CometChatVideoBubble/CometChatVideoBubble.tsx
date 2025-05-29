@@ -200,7 +200,7 @@ export const CometChatVideoBubble = (props: CometChatVideoBubbleInterface) => {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                     onTouchMove={onTouchMove}
-                    style={[Style.playIconPosition, { backgroundColor: playIconBackgroundColor, borderRadius }]}>
+                    style={[Style.playIconPosition, { borderRadius }]}>
                     {isLoading ? <ActivityIndicator size={"small"} color={playIconTint} />
                         : <Image source={playIcon || defaultPlayIcon} style={{ tintColor: playIconTint }} />
                     }

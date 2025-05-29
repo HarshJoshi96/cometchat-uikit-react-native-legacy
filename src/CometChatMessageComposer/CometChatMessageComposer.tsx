@@ -12,6 +12,7 @@ import {
   Text,
   ViewProps,
   TextStyle,
+  Alert,
 } from 'react-native';
 import { Style } from './styles';
 import {
@@ -68,6 +69,8 @@ import { AIOptionsStyle } from '../AI/AIOptionsStyle';
 import { CommonUtils } from '../shared/utils/CommonUtils';
 import { permissionUtil } from '../shared/utils/PermissionUtil';
 import { commonVars } from '../shared/base/vars';
+import { NetworkContext } from '../../../../../src/contextProvider/networkProvider';
+
 const { FileManager, CommonUtil } = NativeModules;
 
 const uiEventListenerShow = 'uiEvent_show_' + new Date().getTime();
@@ -89,8 +92,8 @@ const MessagePreviewTray = (props: any) => {
 const ImageButton = (props: any) => {
   const { image, onClick, buttonStyle, imageStyle, disable } = props;
   return (
-    <TouchableOpacity activeOpacity={disable ? 1 : undefined} onPress={disable ? () => { } : onClick} style={buttonStyle}>
-      <Image source={image} style={[{ height: 24, width: 24 }, imageStyle]} />
+    <TouchableOpacity activeOpacity={disable ? 1 : undefined} onPress={disable ? () => { } : onClick} style={[buttonStyle,{ justifyContent : 'center'}]}>
+      <Image source={image} style={[imageStyle]} />
     </TouchableOpacity>
   );
 };
@@ -545,6 +548,7 @@ export interface CometChatMessageComposerInterface {
 }
 export const CometChatMessageComposer = React.forwardRef(
   (props: CometChatMessageComposerInterface, ref) => {
+    const { isConnected} = useContext(NetworkContext);
     const editMessageListenerID = 'editMessageListener_' + new Date().getTime();
     const UiEventListenerID = 'UiEventListener_' + new Date().getTime();
 
@@ -588,7 +592,8 @@ export const CometChatMessageComposer = React.forwardRef(
       keyboardAvoidingViewProps,
       textFormatters,
       disableMentions,
-      imageQuality = 20
+      imageQuality = 20,
+      sendIcon
     } = props;
 
     const defaultAttachmentOptions =
@@ -862,7 +867,7 @@ export const CometChatMessageComposer = React.forwardRef(
     };
 
     const sendTextMessage = () => {
-
+      if(isConnected) {
       //ignore sending new message
       if (messagePreview != null) {
         editMessage(messagePreview.message);
@@ -930,6 +935,9 @@ export const CometChatMessageComposer = React.forwardRef(
           );
           clearInputBox();
         });
+      } else {
+        Alert.alert("No Internet Connection", "Please check your internet connection and try again.");
+      }
     };
 
     /** edit message */
@@ -1155,16 +1163,12 @@ export const CometChatMessageComposer = React.forwardRef(
         return <SendButtonView user={user} group={group} composerId={id} />;
       return (
         <ImageButton
-          image={ICONS.SEND}
+          image={sendIcon}
           imageStyle={[
             Style.imageStyle,
-            {
-              tintColor: ((inputMessage as String).length === 0) ? theme.palette.getAccent400() :
-                messageComposerStyle?.sendIconTint ||
-                theme.palette.getPrimary(),
-            },
+            { tintColor : (`${inputMessage}`).length ? theme.palette.getPrimary() : null }
           ]}
-          disable={((inputMessage as String).length === 0)}
+          disable={((`${inputMessage}`).length === 0)}
           onClick={sendTextMessage}
         />
       );
@@ -1179,20 +1183,24 @@ export const CometChatMessageComposer = React.forwardRef(
         <AttachIconButton
           icon={attachmentIcon}
           show={true}
-          onClick={() => setShowActionSheet(true)}
+          onClick={() => {
+            if(isConnected) {
+              setShowActionSheet(true)
+            } else {
+              Alert.alert("No Internet Connection", "Please check your internet connection and try again.");
+            }
+          }}
           style={{
-            height: 23,
-            width: 23,
             resizeMode: 'contain',
             tintColor: messageComposerStyle?.attachIconTint
               ? messageComposerStyle.attachIconTint
-              : theme.palette.getAccent(),
+              : theme.palette.getAccent600(),
           }}
         />
       );
     };
     const PrimaryButtonView = () => {
-      return ((inputMessage as String).length !== 0) || hideLiveReaction ? (
+      return ((`${inputMessage}`).length !== 0) || hideLiveReaction ? (
         <SendButtonViewElem />
       ) : (
         <View>
@@ -1215,7 +1223,13 @@ export const CometChatMessageComposer = React.forwardRef(
           Style.imageStyle,
           messageComposerStyle?.voiceRecordingIconTint ? { tintColor: messageComposerStyle?.voiceRecordingIconTint } : {},
         ]}
-        onClick={() => setShowRecordAudio(true)}
+        onClick={() => {
+          if(isConnected) {
+            setShowRecordAudio(true)
+          } else {
+            Alert.alert("No Internet Connection", "Please check your internet connection and try again.");
+          }
+        }}
       />
     }
     const AIOptionsButtonView = () => {
@@ -1323,8 +1337,7 @@ export const CometChatMessageComposer = React.forwardRef(
                 onPress: () => {
                   setShowActionSheet(false);
                   item.onPress?.(user, group)
-                }
-                  ,
+                },
               };
             return {
               ...item,
@@ -1805,7 +1818,7 @@ export const CometChatMessageComposer = React.forwardRef(
         <KeyboardAvoidingView
           key={id}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.select({ ios: kbOffset })}
+          keyboardVerticalOffset={Platform.select({ios: 0})}
           {...keyboardAvoidingViewProps}
         >
           <View
@@ -1976,4 +1989,5 @@ CometChatMessageComposer.defaultProps = {
   hideLiveReaction: true,
   disableSoundForMessages: true,
   messageComposerStyle: {},
+  sendIcon:ICONS.SEND
 };

@@ -11,7 +11,7 @@ import {
   CometChatListProps,
   CometChatListStylesInterface,
   CometChatOptions,
-  CometChatUiKitConstants,
+  CometChatUiKitConstants
 } from '../shared';
 import { localize, ImageType } from '../shared';
 import { CometChatGroupsEvents } from '../shared/events';

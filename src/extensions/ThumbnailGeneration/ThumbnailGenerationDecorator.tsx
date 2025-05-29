@@ -49,10 +49,10 @@ export class ThumbnailGenerationExtensionDecorator extends DataSourceDecorator {
         let dataObj = attachmentData[0];
 
         if (!dataObj['error']) {
-          let imageLink = dataObj?.['data']?.['thumbnails']?.['url_small'];
-          image = imageLink ? { uri: dataObj['data']['thumbnails']['url_small'] } : defaultThumbnail; //if imageLink is empty or does not exist then load default image
+          let imageLink = dataObj?.['data']?.['thumbnails']?.['url_large'];
+          image = imageLink ? { uri: dataObj['data']['thumbnails']['url_large'] } : defaultThumbnail; //if imageLink is empty or does not exist then load default image
         } else {
-          image = defaultThumbnail; //default image
+          image = defaultThumbnail;  //default image
         }
       }
     }

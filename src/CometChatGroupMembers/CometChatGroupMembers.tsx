@@ -20,6 +20,8 @@ import { CometChatContextType } from "../shared/base/Types";
 import { CometChatUIEventHandler } from "../shared/events/CometChatUIEventHandler/CometChatUIEventHandler";
 import { StatusIndicatorStyleInterface } from "../shared/views/CometChatStatusIndicator/StatusIndicatorStyle";
 import { CommonUtils } from "../shared/utils/CommonUtils";
+import { EventRegister } from "react-native-event-listeners";
+
 
 // Note: Omit all the unwanted props
 export interface CometChatGroupsMembersInterface extends
@@ -174,8 +176,8 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
         searchTextColor: theme?.palette.getAccent(),
         searchTextFont: theme?.typography.caption1,
         separatorColor: theme?.palette.getAccent100(),
-        titleColor: theme?.palette.getAccent(),
-        titleFont: theme?.typography.title1,
+        titleColor: theme?.palette.getPrimary(),
+        titleFont: theme?.typography.heading,
         onlineStatusColor: theme?.palette.getSuccess(),
         loadingIconTint: theme?.palette?.getPrimary(),
         ...groupMemberStyle
@@ -202,9 +204,9 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
         arrowIconTint: theme?.palette.getPrimary(),
         optionTextColor: theme?.palette.getAccent(),
         selectedOptionBackgroundColor: theme?.palette.getAccent400(),
-        optionTextFont: theme?.typography.text1,
+        optionTextFont: theme?.typography.subtitle1,
         selectedOptionTextColor: theme?.palette.getAccent(),
-        selectedOptionTextFont: theme?.typography.text1,
+        selectedOptionTextFont: theme?.typography.subtitle1,
         ...groupScopeStyle
     });
 
@@ -288,6 +290,7 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
                 action.setReceiver(group);
                 action.setConversationId((group as any)['conversationId'])
                 CometChatUIEventHandler.emitGroupEvent(CometChatGroupsEvents.ccGroupMemberKicked, { message: action, kickedUser: user, kickedBy: loggedInUser.current, kickedFrom: group });
+                EventRegister.emit('handleGroupMemberRemoval', 'success');
             })
             .catch((err: any) => {
                 console.log("kick user", err);
@@ -337,23 +340,23 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
 
     function getStatusIndicatorColor(
         groupMember: CometChat.GroupMember
-    ): string | null {
+      ): string | null {
         if (
-            props.disableUsersPresence ||
-            (groupMember?.getStatus && groupMember.getStatus()) === CometChatUiKitConstants.UserStatusConstants.offline
+         props.disableUsersPresence ||
+         (groupMember?.getStatus && groupMember.getStatus()) === CometChatUiKitConstants.UserStatusConstants.offline
         ) {
-            return null;
+          return null;
         }
         return (
-            groupMemberStyle?.onlineStatusColor ||
-            theme.palette.getSuccess() ||
-            null
+          groupMemberStyle?.onlineStatusColor ||
+          theme.palette.getSuccess() ||
+          null
         );
-    }
+      }
 
     const ItemView = ({ item: member, ...props }: any) => {
         if (ListItemView)
-            return ListItemView(member);
+            return <ListItemView {...member} />
 
         let image, backgroundColor
         if (selecting) {
@@ -461,6 +464,7 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
                         color: isCurrent && _groupScopeStyle.selectedOptionTextColor || _groupScopeStyle.optionTextColor,
                         backgroundColor: isCurrent && _groupScopeStyle.selectedOptionBackgroundColor || _groupScopeStyle.backgroundColor || "transparent",
                         borderRadius: isCurrent && _groupScopeStyle.selectedOptionBorderRadius || _groupScopeStyle.optionBorderRadius,
+                        fontSize : 14
                     }
                 ] as TextStyle}>{title}</Text>
             </TouchableOpacity>
@@ -479,7 +483,7 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
                         Style.changeDialogView,
                         { backgroundColor: _groupScopeStyle.backgroundColor }
                     ]}>
-                        <Text style={[Style.changeDialogTitle, { color: _groupScopeStyle.optionTextColor }]}>{localize("CHANGE_SCOPE")}</Text>
+                        <Text style={[Style.changeDialogTitle,theme.typography.heading, { color: _groupScopeStyle.optionTextColor }]}>{localize("CHANGE_SCOPE")}</Text>
                         <View style={{
                             width: _groupScopeStyle.width,
                             backgroundColor: _groupScopeStyle.backgroundColor,
@@ -498,7 +502,7 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
         }
 
         if (member['scope'] == group['scope'] && group['owner'] == member['uid']) {
-            return <Text style={{ ...titleTextFont, color: _groupScopeStyle.optionTextColor }}>{localize("OWNER")}</Text>;
+            return <Text style={{ ...titleTextFont,...theme.typography.subtitle1, color: _groupScopeStyle.optionTextColor }}>{localize("OWNER")}</Text>;
         }
 
         return <View
@@ -523,10 +527,10 @@ export const CometChatGroupsMembers = (props: CometChatGroupsMembersInterface) =
                 onPress={() => setShowChangeScope(changeScopeOptions?.length > 0 ? !showChangeScope : false)}
             >
                 <View style={{ flexDirection: "row" }}>
-                    <Text style={{ ...titleTextFont, color: _groupScopeStyle.optionTextColor }}>{group['owner'] == member.uid ? "owner" : member.scope}</Text>
+                <Text style={{ ...titleTextFont,...theme.typography.subtitle1 , color: _groupScopeStyle.optionTextColor }}>{group['owner'] == member.uid ? "owner" : member.scope}</Text>
                     {
                         changeScopeOptions?.length > 0 ?
-                            <Image style={{ height: 16, width: 16, tintColor: _groupScopeStyle.arrowIconTint }} source={downArrowIcon} /> :
+                        <Image style={{ height: 16, width: 16, tintColor: _groupScopeStyle.arrowIconTint, marginTop : 1, marginLeft : 5 }} source={downArrowIcon} /> :
                             null
                     }
                 </View>

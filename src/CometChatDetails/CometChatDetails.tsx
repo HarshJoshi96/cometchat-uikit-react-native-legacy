@@ -564,6 +564,10 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
       onClick,
     } = item;
     let handleInternalClick;
+
+      // Remove below if condition to unblock ban functionality
+    if (item.id === 'ban') return null
+    
     if (!onClick) {
       handleInternalClick = handleOnClickFncDeclaration(item);
     }
@@ -584,6 +588,7 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
           style={[
             styles.listItemTitle,
             { color: theme.palette.getAccent() },
+            theme.typography.subtitle1,
             titleStyle,
           ]}
         >
@@ -630,10 +635,10 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
           )}
           ListHeaderComponent={() => (
             <SectionHeader
-              title={title}
-              titleColor={titleColor}
-              titleFont={titleFont}
-              titleStyle={titleStyle}
+            title={title}
+            titleColor={titleColor ?? theme.palette.getTertiary()}
+            titleFont={titleFont ?? theme.typography.subtitle1}
+            titleStyle={titleStyle}
             />
           )}
           ListFooterComponent={() =>
@@ -740,7 +745,7 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
   };
 
   const handleGroupListener = (group: any) => {
-    setGroupDetails(group);
+    group && setGroupDetails(group);
   };
 
   useEffect(() => {
@@ -811,7 +816,13 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
         group={groupDetails}
         onBack={handleBackButtonClick}
         selectionMode="none"
-        groupMemberStyle={{ backIconTint: detailsStyle?.backIconTint ?? undefined }}
+        backButtonIcon={closeButtonIcon}
+        groupMemberStyle={{ backIconTint: detailsStyle?.backIconTint ?? null, titleFont: {
+          fontFamily: "Montserrat-SemiBold",
+          fontSize: 18,
+        },
+        separatorColor:'#EEEEEE'
+        }}
         {...groupMembersConfiguration}
       />
     );
@@ -821,7 +832,12 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
       <CometChatAddMembers
         group={groupDetails}
         onBack={handleBackButtonClick}
-        usersStyle={{ backIconTint: detailsStyle?.backIconTint ?? undefined }}
+        backButtonIcon={closeButtonIcon}
+        usersStyle={{ backIconTint: detailsStyle?.backIconTint ?? null, titleFont: {
+          fontFamily: "Montserrat-SemiBold",
+          fontSize: 18,
+        }
+        }}
         {...addMembersConfiguration}
       />
     );
@@ -831,6 +847,7 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
       <CometChatBannedMembers
         group={groupDetails}
         onBack={handleBackButtonClick}
+        backButtonIcon={closeButtonIcon}
         bannedMemberStyle={{ backIconTint: detailsStyle?.backIconTint ?? undefined }}
         {...bannedMembersConfiguration}
       />
@@ -841,6 +858,7 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
       <CometChatTransferOwnership
         group={groupDetails}
         onBack={handleBackButtonClick}
+        backButtonIcon={closeButtonIcon}
         {...transferOwnershipConfiguration}
       />
     );
@@ -870,6 +888,9 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
           ...(detailsStyle?.titleFont
             ? detailsStyle?.titleFont
             : theme.typography.heading),
+            fontFamily: 'Montserrat-SemiBold',
+            fontSize: 20,
+            fontWeight: null
         }}
         closeIconTint={
           detailsStyle?.closeIconTint ?? theme.palette.getPrimary()
@@ -901,7 +922,7 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
             listItemStyle ? listItemStyle : { titleFont: { fontWeight: '600' } }
           }
           avatarName={userDetails?.getName() || groupDetails?.getName()}
-          avatarURL={{ uri: userDetails?.getAvatar() || groupDetails?.getIcon() }}
+          avatarURL={userDetails && userDetails.getAvatar() ? {uri: userDetails.getAvatar()} : groupDetails ? groupDetails.getIcon() ? {uri: groupDetails.getIcon()} : privateGroupIcon : undefined }
           headViewContainerStyle={{
             paddingRight: 15,
             paddingLeft: 0,
@@ -942,19 +963,19 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
               ? detailsStyle?.onlineStatusColor ?? theme.palette.getSuccess()
               : ''
           }
-          statusIndicatorIcon={
-            groupDetails
-              ? groupDetails.getType() === CometChat.GROUP_TYPE.PASSWORD
-                ? protectedGroupIcon
-                  ? protectedGroupIcon
-                  : ICONS.PROTECTED
-                : groupDetails.getType() === CometChat.GROUP_TYPE.PRIVATE
-                  ? privateGroupIcon
-                    ? privateGroupIcon
-                    : ICONS.PRIVATE
-                  : null
-              : null
-          }
+          // statusIndicatorIcon={
+          //   groupDetails
+          //     ? groupDetails.getType() === CometChat.GROUP_TYPE.PASSWORD
+          //       ? protectedGroupIcon
+          //         ? protectedGroupIcon
+          //         : ICONS.PROTECTED
+          //       : groupDetails.getType() === CometChat.GROUP_TYPE.PRIVATE
+          //         ? privateGroupIcon
+          //           ? privateGroupIcon
+          //           : ICONS.PRIVATE
+          //         : null
+          //     : null
+          // }
           title={userDetails?.getName() || groupDetails?.getName()}
           SubtitleView={
             SubtitleView

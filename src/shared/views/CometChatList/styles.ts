@@ -1,62 +1,70 @@
 //@ts-ignore
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
-    paddingStart: 16,
-    paddingEnd: 16,
     alignSelf: 'center',
   },
   container: {
     flex: 1,
     width: '100%',
+    paddingHorizontal : 28,
+    marginTop:10,
   },
   listBaseHeaderStyle: {
     alignItems: 'flex-start',
     justifyContent: 'center',
     width: '100%',
-    borderRadius: 0,
   },
   upperContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     width: '100%',
+    height : 120,
+    elevation: 2,
+    shadowColor: Platform.OS == 'android' ? '#000' : 'rgba(153, 153, 153, 1)',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    backgroundColor: 'white',
+    zIndex: 1,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    paddingHorizontal : 20,
+    paddingBottom : 30
   },
   headerLeftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 55,
   },
   searchBox: {
-    height: 36,
+    height: 40,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginHorizontal: 2,
-    marginBottom: 16,
+    alignItems: 'center',
+    marginHorizontal: 19,
+    marginVertical: 25,
     overflow: 'hidden',
   },
   titleStyle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#000',
+    color: '#247BA0',
   },
   backButtonStyle: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
+    marginRight: 14,
+    marginTop : 3,
   },
   searchTextStyle: {
     flex: 1,
-    padding: 5,
-    fontSize: 17,
-    fontWeight: '400',
     marginLeft: 8,
     alignSelf:"center"
   },
@@ -64,8 +72,6 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     marginLeft: 11,
-    marginTop: 10,
-    marginBottom: 10,
   },
   msgContainerStyle: {
     flex: 1,
@@ -98,6 +104,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  selectionIcon : {
+    height : 20,
+    width : 20
+  }
 });
 
 export default styles;

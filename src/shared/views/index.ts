@@ -118,11 +118,11 @@ import {
   CometChatSchedulerBubble,
   CometChatSchedulerBubbleInterface,
 } from "./CometChatSchedulerBubble";
-import {
-  CometChatDateTimePicker,
-  CometChatDateTimePickerInterface,
-  DatePickerStyleInterface,
-} from "./CometChatDateTimePicker";
+// import {
+//   CometChatDateTimePicker,
+//   CometChatDateTimePickerInterface,
+//   DatePickerStyleInterface,
+// } from "./CometChatDateTimePicker";
 
 import {
   CometChatReactions,
@@ -219,7 +219,7 @@ export {
   CometChatSuggestionList,
   SuggestionItem,
   SuggestionListConfiguration,
-  CometChatDateTimePicker,
+  // CometChatDateTimePicker,
 };
 export type {
   CometChatMessageInputStyleInterface,
@@ -272,6 +272,6 @@ export type {
   CometChatSchedulerBubbleInterface,
   CometChatSuggestionListInterface,
   SuggestionListConfigurationInterface,
-  CometChatDateTimePickerInterface,
-  DatePickerStyleInterface,
+  // CometChatDateTimePickerInterface,
+  // DatePickerStyleInterface,
 };

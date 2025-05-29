@@ -50,6 +50,7 @@ export class MessageComposerConfiguration {
   deleteIconUrl?: ImageType;
   stopIconUrl?: ImageType;
   submitIconUrl?: ImageType;
+  sendIcon?:ImageType;
   onChangeText?: (text: string) => void;
   onError?: (error: CometChat.CometChatException) => void;
   onSendButtonPress?: (message: CometChat.BaseMessage) => void;

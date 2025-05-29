@@ -42,13 +42,11 @@ export const CometChatGroupsWithMessages = (props: CometChatGroupsWithMessagesIn
 
     const {theme} = useContext(CometChatContext);
 
-    const [showComponent, setShowComponent] = useState(
-        group && group instanceof CometChat.Group ? ComponentNames.Messages : ComponentNames.GroupsList
-    );
+    const [showComponent, setShowComponent] = useState(ComponentNames.GroupsList);
     const [joinProtectedGroup, setJoinProtectedGroup] = useState(false);
     // const [showForwarding, setShowForwarding] = useState(false);
 
-    const selectedGroup= useRef<any>(group && group instanceof CometChat.Group ? group : undefined);
+    const selectedGroup= useRef(group);
     const selectedUser = useRef<any>();
 
     const _createGroupConfig = new CreateGroupConfiguration({...createGroupConfiguration});

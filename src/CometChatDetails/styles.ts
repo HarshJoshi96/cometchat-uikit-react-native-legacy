@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: { flex: 1, paddingLeft: 15, backgroundColor: '#fff' },
+  container: { flex: 1, paddingLeft: 20, backgroundColor: '#fff' },
   sectionDivider: {
     height: 1,
     marginTop: 20,

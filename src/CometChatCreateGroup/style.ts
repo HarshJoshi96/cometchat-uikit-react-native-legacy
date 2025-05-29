@@ -2,16 +2,18 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: 15 },
+  container: { flex: 1 },
   textInput: {
     marginTop: 32,
     padding: 8,
     borderBottomWidth: 1,
+    marginHorizontal : 28,
   },
   tabContainer: {
     flexDirection: 'row',
     borderRadius: 20,
-    marginTop: 10,
+    marginTop: 15,
+    marginHorizontal : 28,
   },
   errorContainer: {
     flexDirection: 'row',

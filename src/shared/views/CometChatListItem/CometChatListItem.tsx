@@ -85,7 +85,7 @@ export const CometChatListItem = (props: CometChatListItemInterface) => {
   const swipeRowRef = useRef<any>(null)
   const defaultlistItemStyleProps = new ListItemStyle({
     backgroundColor: theme.palette.getBackgroundColor(),
-    titleColor: theme.palette.getAccent(),
+    titleColor: theme.palette.getAccent200(),
     titleFont: theme.typography.name,
   });
   const listItemStyle = {

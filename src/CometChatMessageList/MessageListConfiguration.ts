@@ -92,7 +92,7 @@ export interface MessageListConfigurationInterface {
   /**
    * Hides the header of the action sheet
    */
-  /**
+    /**
    * @deprecated
    * 
    * This property is deprecated as of version 4.3.20, as it is no longer needed. It will be removed in subsequent versions.
@@ -155,7 +155,7 @@ export class MessageListConfiguration
   timestampAlignment!: MessageTimeAlignmentType;
   templates!: CometChatMessageTemplate[];
   messageRequestBuilder!: CometChat.MessagesRequestBuilder;
-  /**
+    /**
      * @deprecated
      * 
      * This property is deprecated as of version 4.3.18 due to newer property 'scrollToBottomOnNewMessages'. It will be removed in subsequent versions.
@@ -189,18 +189,18 @@ export class MessageListConfiguration
   wrapperMessageBubbleStyle!: MessageStyleInterface;
   actionSheetStyle!: ActionSheetStylesInterface;
   messageListStyle!: MessageListStyleInterface;
-  /**
-    * @deprecated
-    * 
-    * This property is deprecated as of version 4.3.18 due to newer property 'hideReceipt'. It will be removed in subsequent versions.
-  */
+/**
+  * @deprecated
+  * 
+  * This property is deprecated as of version 4.3.18 due to newer property 'hideReceipt'. It will be removed in subsequent versions.
+*/
   disableReceipt?: boolean;
   hideReceipt?: boolean;
   dateSeparatorPattern!: (item: number) => DatePattern;
   /**
    * Hides the header of the action sheet
    */
-  /**
+    /**
    * @deprecated
    * 
    * This property is deprecated as of version 4.3.20, as it is no longer needed. It will be removed in subsequent versions.

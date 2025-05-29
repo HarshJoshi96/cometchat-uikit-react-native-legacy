@@ -31,7 +31,7 @@ export const Style = StyleSheet.create({
 
   titleTextStyle: {
     opacity: 1,
-
+    color : '#000',
     textAlign: 'left',
   },
   tailViewStyle: {
@@ -42,6 +42,7 @@ export const Style = StyleSheet.create({
   optionStyle: {
     position: 'absolute',
     end: 0,
+    marginTop: 10
   },
   optionStyleContainer: {
     height: '100%',

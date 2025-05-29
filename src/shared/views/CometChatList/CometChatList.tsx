@@ -104,7 +104,8 @@ export interface CometChatListProps {
   hideError?: boolean;
   onItemPress?: (user: any) => void;
   onItemLongPress?: (user: any) => void;
-  onError?: (error: CometChat.CometChatException) => void;
+  // onError?: (error: CometChat.CometChatException) => void;
+  onError?: (error: any) => void;
   onBack?: Function;
   selectionIcon?: ImageType;
   listItemKey: 'uid' | 'guid' | 'conversationId';
@@ -174,6 +175,8 @@ export const CometChatList = React.forwardRef<
     tailViewContainerStyle,
     listStyle,
     hideSubmitIcon,
+    CreateGroupView,
+    groupMembers,
   } = props;
 
   // functions which can be access by parents
@@ -190,37 +193,38 @@ export const CometChatList = React.forwardRef<
     };
   });
 
-  const [searchInput, setSearchInput] = React.useState(
-    requestBuilder && searchRequestBuilder
-      ? searchRequestBuilder.searchKeyword
-        ? searchRequestBuilder.searchKeyword
-        : ''
-      : requestBuilder
-        ? requestBuilder.searchKeyword
-          ? requestBuilder.searchKeyword
-          : ''
-        : searchRequestBuilder
-          ? searchRequestBuilder.searchKeyword
-            ? searchRequestBuilder.searchKeyword
-            : ''
-          : ''
-  );
-  const searchInputRef = useRef(
-    requestBuilder && searchRequestBuilder
-    ? searchRequestBuilder.searchKeyword
-      ? searchRequestBuilder.searchKeyword
-      : ''
-    : requestBuilder
-      ? requestBuilder.searchKeyword
-        ? requestBuilder.searchKeyword
-        : ''
-      : searchRequestBuilder
-        ? searchRequestBuilder.searchKeyword
-          ? searchRequestBuilder.searchKeyword
-          : ''
-        : ''
-  );
-  
+  // const [searchInput, setSearchInput] = React.useState(
+  //   requestBuilder && searchRequestBuilder
+  //     ? searchRequestBuilder.searchKeyword
+  //       ? searchRequestBuilder.searchKeyword
+  //       : ''
+  //     : requestBuilder
+  //       ? requestBuilder.searchKeyword
+  //         ? requestBuilder.searchKeyword
+  //         : ''
+  //       : searchRequestBuilder
+  //         ? searchRequestBuilder.searchKeyword
+  //           ? searchRequestBuilder.searchKeyword
+  //           : ''
+  //         : ''
+  // );
+  // const searchInputRef = useRef(
+  //   requestBuilder && searchRequestBuilder
+  //   ? searchRequestBuilder.searchKeyword
+  //     ? searchRequestBuilder.searchKeyword
+  //     : ''
+  //   : requestBuilder
+  //     ? requestBuilder.searchKeyword
+  //       ? requestBuilder.searchKeyword
+  //       : ''
+  //     : searchRequestBuilder
+  //       ? searchRequestBuilder.searchKeyword
+  //         ? searchRequestBuilder.searchKeyword
+  //         : ''
+  //       : ''
+  // );
+
+  const [searchInput, setSearchInput] = React.useState('');
   const [shouldSelect, setShouldSelect] = React.useState(
     selectionMode !== 'none' ? true : false
   );
@@ -235,21 +239,20 @@ export const CometChatList = React.forwardRef<
 
   const searchHandler = (searchText: string) => {
     setSearchInput(searchText);
-    let _searchRequestBuilder = searchRequestBuilder || requestBuilder;
-    if (searchRequestBuilder && searchText) {
-      _searchRequestBuilder = searchRequestBuilder
+    if (searchRequestBuilder) {
+      listHandlerRef.current = searchRequestBuilder
         .setSearchKeyword(searchText ? searchText : '')
         .build();
     } else if (requestBuilder) {
-      _searchRequestBuilder = requestBuilder
+      listHandlerRef.current = requestBuilder
         .setSearchKeyword(searchText ? searchText : '')
         .build();
     }
-    getSearch(_searchRequestBuilder);
+    getSearch();
   };
 
-  const getSearch = (builder: any) => {
-    getList(builder)
+  const getSearch = () => {
+    getList(listHandlerRef.current)
       .then((newlist: any) => {
         setDecoratorMessage(NO_DATA_FOUND);
         setList(newlist);
@@ -277,13 +280,14 @@ export const CometChatList = React.forwardRef<
       new CometChat.ConnectionListener({
         onConnected: () => {
           console.log("ConnectionListener => On Connected");
-          if (requestBuilder) {
-            if (searchInputRef.current)
-              listHandlerRef.current = requestBuilder
-                .setSearchKeyword(searchInputRef.current)
-                .build();
-            else listHandlerRef.current = requestBuilder.build();
-          }
+          // if (requestBuilder) {
+          //   if (searchInputRef.current)
+          //     listHandlerRef.current = requestBuilder
+          //       .setSearchKeyword(searchInputRef.current)
+          //       .build();
+          //   else listHandlerRef.current = requestBuilder.build();
+          // }
+          listHandlerRef.current = requestBuilder.build();
           getList(listHandlerRef.current)
             .then((newlist: any) => {
               setDecoratorMessage(NO_DATA_FOUND);
@@ -313,10 +317,16 @@ export const CometChatList = React.forwardRef<
     
   useEffect(() => {
     if (initialRunRef.current === true) {
-      if (requestBuilder) {
-        if (searchInput)
+      if (searchRequestBuilder) {
+        if (searchRequestBuilder?.setSearchKeyword)
+          listHandlerRef.current = searchRequestBuilder
+            .setSearchKeyword('')
+            .build();
+        else listHandlerRef.current = searchRequestBuilder.build()
+      } else if (requestBuilder) {
+        if (requestBuilder?.setSearchKeyword)
           listHandlerRef.current = requestBuilder
-            .setSearchKeyword(searchInput)
+            .setSearchKeyword('')
             .build();
         else listHandlerRef.current = requestBuilder.build();
       }
@@ -329,9 +339,9 @@ export const CometChatList = React.forwardRef<
     setShouldSelect(selectionMode !== 'none' ? true : false);
   }, [selectionMode]);
 
-  useEffect(() => {
-    searchInputRef.current = searchInput
-  }, [searchInput]);
+  // useEffect(() => {
+  //   searchInputRef.current = searchInput
+  // }, [searchInput]);
 
   /**
    * Updates the list of users to be displayed
@@ -610,8 +620,6 @@ export const CometChatList = React.forwardRef<
       lastCall = setTimeout(() => {
         props?.fetchNext().then((listItems: any) => {
           resolve(listItems);
-        }).catch((error: any) => {
-          reject(error)
         });
       }, 500);
       lastReject = reject;
@@ -619,6 +627,8 @@ export const CometChatList = React.forwardRef<
     return promise;
   };
 
+  const isUserExist = (listItem) => groupMembers?.some(el => el?.uid === listItem?.uid)
+  
   /**
    * Returns a container of users if exists else returns the corresponding decorator message
    */
@@ -629,7 +639,7 @@ export const CometChatList = React.forwardRef<
       if (LoadingStateView) return <LoadingStateView />;
       messageContainer = (
         <View style={styles.msgContainerStyle}>
-          <ActivityIndicator size={"large"} color={listStyle?.loadingIconTint || theme.palette.getPrimary()} />
+          <ActivityIndicator size={"large"} color={'black'} />
         </View>
       );
     } else if (
@@ -681,15 +691,19 @@ export const CometChatList = React.forwardRef<
       const listWithHeaders: any[] = [];
       if (list.length) {
         list.forEach((listItem: any) => {
-          const chr = listItem?.name && listItem.name[0].toUpperCase();
-          if (chr !== currentLetter && !hideSeparator && !ListItemView) {
-            currentLetter = chr;
-            listWithHeaders.push({
-              value: currentLetter,
-              header: true,
-            });
+          if (groupMembers && !listItem?.scope && isUserExist(listItem)) {
+
+          } else {
+            const chr = listItem?.name && listItem.name[0].toUpperCase();
+            if (chr !== currentLetter && !hideSeparator && !ListItemView) {
+              currentLetter = chr;
+              listWithHeaders.push({
+                value: currentLetter,
+                header: true,
+              });
+            }
+            listWithHeaders.push({ value: listItem, header: false });
           }
-          listWithHeaders.push({ value: listItem, header: false });
         });
 
         messageContainer = (
@@ -761,15 +775,16 @@ export const CometChatList = React.forwardRef<
         selectionIconTint={theme.palette.getPrimary()}
         searchBorderStyle={listStyle?.searchBorder}
         searchBorderRadius={listStyle?.searchBorderRadius}
-        searchTextFontStyle={listStyle?.searchTextFont ?? theme.typography.body}
+        searchTextFontStyle={listStyle?.searchTextFont ?? theme.typography.subtitle1}
         searchTextColor={listStyle?.searchTextColor ?? theme.palette.getAccent()}
-        searchPlaceholderTextColor={theme.palette.getAccent600()}
+        searchPlaceholderTextColor={'#999999'}
         searchIconTint={
-          listStyle?.searchIconTint ?? theme.palette.getAccent400()
+          listStyle.searchIconTint ?? '#999999'
         }
         searchBackground={
-          listStyle?.searchBackground ?? theme.palette.getAccent50()
+          listStyle.searchBackground ?? theme.palette.getAccent100()
         }
+        CreateGroupView = {CreateGroupView}
       />
       <View style={styles.container}>{getMessageContainer()}</View>
     </View>

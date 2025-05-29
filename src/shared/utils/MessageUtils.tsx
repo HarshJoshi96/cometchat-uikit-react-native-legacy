@@ -50,10 +50,10 @@ export const MessageUtils = {
         } = params
 
         const getStyle = (item: CometChat.BaseMessage) => {
-            let _style: MessageBubbleStyle = {};
-            if(!(item instanceof CometChat.InteractiveMessage)) {
-              _style.alignSelf =  alignment === "left" ? "flex-start" :  "flex-end";
-            }
+          let _style: MessageBubbleStyle = {};
+          if(!(item instanceof CometChat.InteractiveMessage)) {
+            _style.alignSelf =  alignment === "left" ? "flex-start" :  "flex-end";
+          }
             _style.backgroundColor = (alignment !== "left" && (item.getType() === MessageTypeConstants.text || item.getType() === MessageTypeConstants.meeting)) ? theme?.palette.getPrimary() : theme?.palette.getAccent50();
             return _style;
         };
@@ -62,7 +62,7 @@ export const MessageUtils = {
             id={`${message.getId()}`}
             alignment={alignment}
             ContentView={template?.ContentView ? () => template?.ContentView ? template?.ContentView(message, alignment) : null : () => MessageContentView({message,alignment,theme})}
-            BottomView={template?.BottomView && template?.BottomView?.bind(this, message, alignment)}
+            // BottomView={template?.BottomView && template?.BottomView?.bind(this, message, alignment)}
             style={getStyle(message)}
         />;
     },

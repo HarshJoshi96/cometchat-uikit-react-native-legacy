@@ -53,7 +53,7 @@ export class GroupMembersStyle extends BaseStyle {
         searchBorder = new BorderStyle({borderColor: "rgba(20, 20, 20, 0.04)"}),
         searchBorderRadius = 8,
         searchBackgroundColor = "rgba(20, 20, 20, 0.04)",
-        searchTextFont = new FontStyle({fontSize: 17, fontWeight: "400"}),
+        searchTextFont = new FontStyle({fontSize: 12, fontWeight: "400"}),
         searchTextColor = "rgba(20,20,20,0.6)",
         searchIconTint = "rgba(20,20,20,0.4)",
         onlineStatusColor = "rgb(0,200,11)",

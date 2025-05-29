@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput, Image, TextStyle, ViewProps } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, TextStyle, ViewProps, Keyboard } from 'react-native';
 import React, { useContext, useState } from 'react';
 import Header from './Header';
 import { styles } from './style';
@@ -19,6 +19,8 @@ import { ICONS } from './resources';
 import { CometChatGroupsEvents } from '../shared/events';
 import { CometChatContextType } from '../shared/base/Types';
 import { CometChatUIEventHandler } from '../shared/events/CometChatUIEventHandler/CometChatUIEventHandler';
+import { CometChatAddMembers } from '@cometchat/chat-uikit-react-native/src/CometChatAddMembers';
+
 
 export interface CreateGroupStyleInterface {
   titleTextStyle?: FontStyleInterface;
@@ -124,11 +126,14 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
     onError,
     onBack,
     createGroupStyle,
+    onCreateSuccess
   } = props;
   const [password, setPassword] = useState('');
-  const [groupType, setGroupType] = React.useState(GroupTypeConstants.public);
+  const [groupType, setGroupType] = React.useState(GroupTypeConstants.private);
   const [groupName, setGroupName] = React.useState('');
   const [error, setError] = React.useState('');
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [groupDetails, setGroupDetails] = React.useState(null);
 
   const Tab = ({ name, type, onSelect, isSelected }: any) => {
     return (
@@ -176,19 +181,19 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
       setError(localize('GROUP_NAME_MAX'));
       return false;
     }
-    if (groupType == '') {
-      setError(localize('GROUP_TYPE_BLANK'));
-      return false;
-    }
-    if (groupType === GroupTypeConstants.password) {
-      if (!password) {
-        setError(localize('GROUP_PASSWORD_BLANK'));
-        return false;
-      } else if (password.length > 16) {
-        setError(localize('PASSWORD_MAX'));
-        return false;
-      }
-    }
+    // if (groupType == '') {
+    //   setError(localize('GROUP_TYPE_BLANK'));
+    //   return false;
+    // }
+    // if (groupType === GroupTypeConstants.password) {
+    //   if (!password) {
+    //     setError(localize('GROUP_PASSWORD_BLANK'));
+    //     return false;
+    //   } else if (password.length > 16) {
+    //     setError(localize('PASSWORD_MAX'));
+    //     return false;
+    //   }
+    // }
     return true;
   };
 
@@ -212,18 +217,29 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
         break;
     }
     let group = new CometChat.Group(guid, name, type, password);
+    Keyboard.dismiss()
     CometChat.createGroup(group)
       .then((group: any) => {
         CometChatUIEventHandler.emitGroupEvent(
           CometChatGroupsEvents.ccGroupCreated,
           { group }
         );
-        onBack && onBack();
+        if (onCreateSuccess) {
+          setGroupDetails(group)
+          setModalVisible(true)
+       } else {
+        onBack && onBack()
+       }
       })
       .catch((error: CometChat.CometChatException) => {
         onError && onError(error);
       });
   };
+
+  const onSuccess = () => {
+    setModalVisible(false)
+    onCreateSuccess && onCreateSuccess()
+  }
 
   const ErrorView = () => {
     if (!error && error === '') return null;
@@ -270,13 +286,14 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
               { color: theme.palette.getError() },
             ] as TextStyle}
           >
-            {localize('TRY_AGAIN_LATER')}
+            {'Please try again'}
           </Text>
         </View>
       </View>
     );
   };
   return (
+    <>
     <View
       style={[
         styles.container,
@@ -311,7 +328,7 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
         }
         onCancel={disableCloseButton ? () => {} : onBack}
       />
-      <View
+      {/* <View
         style={[
           styles.tabContainer,
           {
@@ -338,7 +355,7 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
           isSelected={groupType === GroupTypeConstants.password}
           onSelect={(type: any) => setGroupType(type)}
         />
-      </View>
+      </View> */}
       <TextInput
         value={groupName}
         onChangeText={setGroupName}
@@ -377,6 +394,17 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
       )}
       <ErrorView />
     </View>
+    {modalVisible &&
+      <CometChatAddMembers
+      group={groupDetails}
+      onBack={()=>setModalVisible(false)}
+      backButtonIcon={closeIcon}
+      usersRequestBuilder={new CometChat.UsersRequestBuilder().setLimit(30).sortBy('name')}
+      onSuccess={onSuccess}
+      selectionIcon={createIcon}
+    />
+    }
+    </>
   );
 };
 

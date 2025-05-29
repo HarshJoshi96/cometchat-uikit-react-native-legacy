@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
-import { View, TouchableOpacity, Image, BackHandler, ViewProps } from "react-native";
+import { View, TouchableOpacity, Image, BackHandler, ViewProps, Platform } from "react-native";
 //@ts-ignore
 import { CometChat } from "@cometchat/chat-sdk-react-native";
 import { MessageStyle, MessageStyleInterface } from "./MessageStyle";
@@ -269,7 +269,12 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                         : {})
                     }
                     {..._detailsConfiguration}
-                    onBack={_detailsConfiguration.onBack || setShowComponent.bind(this, ComponentNames.Default)}
+                        onBack={_detailsConfiguration.onBack || setShowComponent.bind(this, ComponentNames.Default)}
+                        closeButtonIcon={_headerConfiguration?.backButtonIcon}
+                        addMembersConfiguration={{selectionIcon : _headerConfiguration?.selectionIcon, ..._detailsConfiguration?.addMembersConfiguration}}
+                        transferOwnershipConfiguration={{selectionIcon : _headerConfiguration?.selectionIcon}}
+                        privateGroupIcon={_headerConfiguration?.privateGroupIcon}
+    
                 />
             </View>
         }
@@ -282,15 +287,36 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                     onClose={() => setShowComponent(ComponentNames.Default)}
                     threadedMessagesStyle={{ titleStyle: { fontSize: 18 } }}
                     {..._threadedConfiguration}
+                    closeIcon={messageHeaderConfiguration?.backButtonIcon}
+                    messageComposerConfiguration={messageComposerConfiguration}
                 />
             </View>
         }
-        <View style={{ flex: 1 }}>
-            {
+        <View style={{ flex: 1, paddingBottom:20 }}>
+        {
                 hideMessageHeader ?
                     null :
                     MessageHeaderView ?
                         <MessageHeaderView user={userObject} group={groupObject} /> :
+                        <View style={{
+                        elevation: 2,
+                        shadowColor: Platform.OS == 'android' ? '#000' : 'rgba(153, 153, 153, 1)',
+                        height: 120,
+                        borderBottomRightRadius: 20,
+                        borderBottomLeftRadius: 20,
+                        backgroundColor: 'white',
+                        zIndex: 1,
+                        paddingTop:60,
+                        paddingBottom: 30,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        shadowOffset: {
+                          width: 0,
+                          height: 1,
+                        },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 4,
+                        }}>
                         <CometChatMessageHeader
                             user={userObject}
                             group={groupObject}
@@ -298,7 +324,12 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                             disableTyping={disableTyping}
                             onBack={() => setShowComponent(ComponentNames.Default)}
                             {..._headerConfiguration}
+                            onHeaderPresses={() => {
+                                detailsData.current = { user: user, group: group }
+                                setShowComponent(ComponentNames.Details);
+                            }}
                         />
+                        </View>
             }
             <View style={{ flex: 1 }}>
                 {
@@ -316,6 +347,7 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                             }}
                             customSoundForMessages={customSoundForIncomingMessages}
                             hideActionSheetHeader={true}
+                            messageInformationConfiguration={{backIcon : _headerConfiguration?.backButtonIcon}}
                             {..._listConfiguration}
                         />
                 }

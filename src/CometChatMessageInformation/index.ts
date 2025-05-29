@@ -5,10 +5,10 @@ import {
 import { 
   CometChatMessageInformationConfigurationInterface,
   CometChatMessageInformationConfiguration
- } from "./MessageInformationConfiguration";
+} from "./MessageInformationConfiguration";
 import { MessageInformationStyleInterface } from "./MessageInformationStyle";
 
-export { CometChatMessageInformation, CometChatMessageInformationConfiguration };
+export { CometChatMessageInformation , CometChatMessageInformationConfiguration};
 export type {
   CometChatMessageInformationInterface,
   CometChatMessageInformationConfigurationInterface,

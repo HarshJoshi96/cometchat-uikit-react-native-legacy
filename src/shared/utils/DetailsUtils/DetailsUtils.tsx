@@ -138,13 +138,13 @@ export const getCometChatDetailsTemplate = (
 
 export const getDefaultGroupMemberOptions = (group: CometChat.Group | any, groupMember: CometChat.GroupMember | any, theme: CometChatTheme) => {
   let arr: CometChatOptions[] = [];
-  if (validateGroupMemberOptions(group['scope'], groupMember['scope'], GroupMemberOptionBan))
-    arr.push({
-      icon: ICONS.banIcon,
-      backgroundColor: "rgb(255, 201, 0)",
-      id: GroupMemberOptionConstants.ban,
-      iconTint: theme?.palette.getSecondary(),
-    });
+  // if (validateGroupMemberOptions(group['scope'], groupMember['scope'], GroupMemberOptionBan))
+  //   arr.push({
+  //     icon: ICONS.banIcon,
+  //     backgroundColor: "rgb(255, 201, 0)",
+  //     id: GroupMemberOptionConstants.ban,
+  //     iconTint: theme?.palette.getSecondary(),
+  //   });
   if (validateGroupMemberOptions(group['scope'], groupMember['scope'], GroupMemberOptionKick))
     arr.push(
       {
@@ -377,21 +377,21 @@ const _allowedGroupDetailsOptions: { [key: string]: { [key: string]: boolean } }
   },
   [GroupMemberScope.moderator]: {
     [GroupOptionConstants.leave]: true,
-    [GroupOptionConstants.bannedMembers]: true,
+    [GroupOptionConstants.bannedMembers]: false,
     [GroupOptionConstants.viewMembers]: true,
     [GroupOptionConstants.addMembers]: false,
     [GroupOptionConstants.delete]: false,
   },
   [GroupMemberScope.admin]: {
     [GroupOptionConstants.leave]: true,
-    [GroupOptionConstants.bannedMembers]: true,
+    [GroupOptionConstants.bannedMembers]: false,
     [GroupOptionConstants.viewMembers]: true,
     [GroupOptionConstants.addMembers]: true,
     [GroupOptionConstants.delete]: true,
   },
   [GroupMemberScope.owner]: {
     [GroupOptionConstants.leave]: true,
-    [GroupOptionConstants.bannedMembers]: true,
+    [GroupOptionConstants.bannedMembers]: false,
     [GroupOptionConstants.viewMembers]: true,
     [GroupOptionConstants.addMembers]: true,
     [GroupOptionConstants.delete]: true,

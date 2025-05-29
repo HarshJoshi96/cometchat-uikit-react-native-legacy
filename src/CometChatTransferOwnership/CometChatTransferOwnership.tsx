@@ -76,6 +76,10 @@ export const CometChatTransferOwnership = (
   const [loggedInUser, setLoggedInUser] = useState<CometChat.User | null>();
 
   const transferOwnership = (members: string | any[]) => {
+    if(!members.length){
+      onBack && onBack()
+      return
+    }
     if(!members.length) return
     let member = members[0];
     let GUID: string = member.guid;
@@ -133,7 +137,7 @@ export const CometChatTransferOwnership = (
         }}
         selectionMode={'single'}
         onSelection={transferOwnership}
-        groupMemberStyle={transferOwnershipStyle}
+        // groupMemberStyle={transferOwnershipStyle}
         onBack={onBack}
         {...newProps}
       />

@@ -173,10 +173,10 @@ import {
   SuggestionListConfiguration,
   SuggestionListConfigurationInterface,
   SuggestionItem,
-  DateTimeElement,
-  CometChatDateTimePicker,
-  CometChatDateTimePickerInterface,
-  DatePickerStyleInterface,
+  // DateTimeElement,
+  // CometChatDateTimePicker,
+  // CometChatDateTimePickerInterface,
+  // DatePickerStyleInterface,
 } from "./shared";
 
 import {
@@ -579,8 +579,8 @@ export {
   SuggestionItem,
   SuggestionListConfiguration,
   /* Text Formatters */
-  DateTimeElement,
-  CometChatDateTimePicker,
+  // DateTimeElement,
+  // CometChatDateTimePicker,
   CometChatMessageInformationConfiguration
 };
 export type {
@@ -751,9 +751,9 @@ export type {
   QuickReactionsStyleInterface,
   CometChatSuggestionListInterface,
   SuggestionListConfigurationInterface,
-  CometChatDateTimePickerInterface,
-  DatePickerStyleInterface,
-  CometChatMessageInformationConfigurationInterface,
+  // CometChatDateTimePickerInterface,
+  // DatePickerStyleInterface,
+  CometChatMessageInformationConfigurationInterface
 };
 
 // AI

@@ -13,13 +13,14 @@ export const Styles = StyleSheet.create({
     position: 'absolute',
   },
   avatarStyle: {
-    height: '100%',
-    width: '100%',
+    // height: '100%',
+    // width: '100%',
     marginTop: 8,
     marginBottom: 8,
   },
   textStyle: {
     textAlign: 'center',
     textAlignVertical: 'center',
+    color : '#fff'
   },
 });

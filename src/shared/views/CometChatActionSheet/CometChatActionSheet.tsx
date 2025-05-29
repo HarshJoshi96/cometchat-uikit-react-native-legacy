@@ -152,10 +152,10 @@ export const CometChatActionSheet = (props: CometChatActionSheetInterface) => {
   const { theme } = useContext<CometChatContextType>(CometChatContext);
   const style: any = {
     ...new ActionSheetStyles({
-      listItemIconTint: theme.palette.getAccent700(),
-      listItemTitleFont: theme.typography.subtitle1,
-      listItemTitleColor: theme.palette.getAccent(),
-      titleColor: theme.palette.getAccent(),
+      listItemIconTint: theme.palette.getTertiary(),
+      listItemTitleFont: theme.typography.name,
+      listItemTitleColor: theme.palette.getTertiary(),
+      titleColor: theme.palette.getTertiary(),
       titleFont: theme.typography.name,
       backgroundColor: props.style?.backgroundColor,
       paddingHorizontal: props.style?.paddingHorizontal
@@ -171,11 +171,11 @@ export const CometChatActionSheet = (props: CometChatActionSheetInterface) => {
 
   const _render = ({ item }: any) => {
     return (
-      <OptionListView id={item.id} {...item} iconUrl={item.icon || item.iconUrl} theme={theme} backgroundColor={style.listItemBackground} style={style} />
+      <OptionListView id={item.id} {...item} iconUrl={item.icon || item.iconUrl} theme={theme} style={style} iconTint={theme.palette.getAccent600()} />
     );
   };
   const _renderGrid = ({ item }: any) => (
-    <OptionGridView id={item.id} {...item} iconUrl={item.icon || item.iconUrl} theme={theme} style={style} />
+    <OptionGridView id={item.id} {...item} iconUrl={item.icon || item.iconUrl} theme={theme} style={style} iconTint={theme.palette.getAccent600()} />
   );
 
   const getList = () => {

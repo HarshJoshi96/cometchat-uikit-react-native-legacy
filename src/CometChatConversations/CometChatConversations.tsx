@@ -279,7 +279,9 @@ export const CometChatConversations = (props: ConversationInterface) => {
         onBack,
         conversationsStyle,
         disableMentions,
-        textFormatters
+        textFormatters,
+        privateGroupIcon,
+        refreshUnreadMessageCount
     } = props;
 
     //context
@@ -289,7 +291,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
     const conversationListRef = React.useRef<CometChatListActionsInterface>(null);
     const loggedInUser = React.useRef<CometChat.User | null | any>(null);
     const [confirmDelete, setConfirmDelete] = React.useState(undefined);
-    const [selecting, setSelecting] = React.useState(selectionMode === 'none' ? false : true);
+    const [selecting, setSelecting] = React.useState(false);
     const [selectedConversation, setSelectedConversations] = React.useState<any[]>([]);
     const onMemberAddedToGroupDebounceTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -314,15 +316,15 @@ export const CometChatConversations = (props: ConversationInterface) => {
     });
     const _statusIndicatorStyle = new StatusIndicatorStyle(props?.statusIndicatorStyle || {});
     const _avatarStyle = new AvatarStyle({
-        backgroundColor: theme?.palette?.getAccent600(),
-        nameTextColor: theme?.palette?.getAccent(),
+        backgroundColor: theme?.palette?.getPrimary(),
+        nameTextColor: theme?.palette?.getSecondary(),
         nameTextFont: theme?.typography.body,
         ...props?.avatarStyle
     });
 
     const _listItemStyle = new ListItemStyle({
         backgroundColor: theme?.palette?.getBackgroundColor(),
-        titleColor: theme?.palette.getAccent(),
+        titleColor: theme?.palette.getTertiary(),
         titleFont: theme?.typography.name,
         ...props?.listItemStyle
     });
@@ -367,7 +369,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
     const userEventHandler = (...args: any[]) => {
         const { uid, blockedByMe, status } = args[0];
         if (!blockedByMe) {
-            let item: CometChat.Conversation | any = conversationListRef.current?.getListItem(`${uid}_user_${loggedInUser.current?.uid}`) as unknown as CometChat.Conversation || conversationListRef.current?.getListItem(`${loggedInUser.current?.uid}_user_${uid}`) as unknown as CometChat.Conversation;
+            let item: CometChat.Conversation | any = conversationListRef.current?.getListItem(`${uid}_user_${loggedInUser.current?.uid}`)  as unknown as CometChat.Conversation || conversationListRef.current?.getListItem(`${loggedInUser.current?.uid}_user_${uid}`) as unknown as CometChat.Conversation;
             if (item) {
                 let updatedConversation = CommonUtils.clone(item);
                 updatedConversation.setConversationWith(args[0]);
@@ -428,8 +430,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
                        conver.setUnreadMessageCount(0);
                     }
                     conver.setLastMessage(newMessage)
-                    conversationListRef.current?.updateList(conver)
-                }
+                    conversationListRef.current?.updateList(conver)                }
             })
 
     }
@@ -504,6 +505,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
     return true;
   };
 
+
     /**
      * Find conversation from state and udpate its last message object.
      * Also remove from the current location and put it to 1st location.
@@ -573,8 +575,8 @@ export const CometChatConversations = (props: ConversationInterface) => {
             ) as unknown as CometChat.Conversation || 
             conversationListRef.current?.getListItem(
               `${receipt?.getSender()?.getUid()}_user_${receipt?.getReceiver()}`
-            ) as unknown as CometChat.Conversation
-          : [receipt.RECEIPT_TYPE.DELIVERED_TO_ALL_RECEIPT, receipt.RECEIPT_TYPE.READ_BY_ALL_RECEIPT].includes(receipt?.getReceiptType()) &&
+              ) as unknown as CometChat.Conversation
+            : [receipt.RECEIPT_TYPE.DELIVERED_TO_ALL_RECEIPT, receipt.RECEIPT_TYPE.READ_BY_ALL_RECEIPT].includes(receipt?.getReceiptType()) &&
             conversationListRef.current?.getListItem(
               `group_${receipt?.getReceiver()}`
             ) as unknown as CometChat.Conversation;
@@ -590,16 +592,15 @@ export const CometChatConversations = (props: ConversationInterface) => {
       if (
         conv &&
         conv?.getLastMessage &&
-        (conv.getLastMessage().id == receipt.getMessageId() ||
-          conv.getLastMessage().messageId == receipt.getMessageId())
+        (conv.getLastMessage().id == receipt['messageId'] ||
+          conv.getLastMessage().messageId == receipt['messageId'])
       ) {
         let newConversation = CommonUtils.clone(conv);
         if (receipt.getReadAt()) {
-          newConversation.getLastMessage().setReadAt(receipt.getReadAt());
-        }
-        if (receipt.getDeliveredAt()) {
-          newConversation.getLastMessage().setDeliveredAt(receipt.getDeliveredAt());
-        }
+            newConversation.getLastMessage().setReadAt(receipt.getReadAt());        }
+            if (receipt.getDeliveredAt()) {
+                newConversation.getLastMessage().setDeliveredAt(receipt.getDeliveredAt());
+              }
         conversationListRef.current?.updateList(newConversation);
       }
     };
@@ -736,10 +737,13 @@ export const CometChatConversations = (props: ConversationInterface) => {
                 groupText = (lastMessage.getSender()?.getName() || "").trim() + ": ";
             }
         }
+        messageText = groupText ? messageText?.replace('kicked','removed'): messageText
 
         return (
-            <Text numberOfLines={1} ellipsizeMode={"tail"} style={[Style.subtitleTextStyle, {
-                color: theme.palette.getAccent600(), fontSize: theme.typography.subtitle1.fontSize,
+            <Text numberOfLines={1} ellipsizeMode={"tail"}
+                style={[Style.subtitleTextStyle, {
+                    color: theme.palette.getAccent600(),
+                    fontSize: theme.typography.subtitle1.fontSize,
                 fontWeight: theme.typography.subtitle1.fontWeight
             }] as TextStyle}>
                 {groupText}{messageText}
@@ -913,6 +917,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
     }
 
     React.useEffect(() => {
+        refreshUnreadMessageCount()
         CometChat.getLoggedinUser()
             .then((u: any) => { loggedInUser.current = u })
             .catch((err: any) => console.log(err));
@@ -1059,6 +1064,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
                     ({ conversation }: { conversation: CometChat.Conversation | any }) => {
                         conversationListRef.current?.removeItemFromList(conversation.getConversationId());
                         removeItemFromSelectionList(conversation.getConversationId())
+                        // refreshUnreadMessageCount()
                     }
             }
         );
@@ -1074,6 +1080,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
                     }
                 },
                 ccMessageRead: ({ message }: any) => {
+                    refreshUnreadMessageCount()
                     checkAndUpdateLastMessage(message, true)
                 },
                 ccMessageDeleted: ({ message }: any) => {
@@ -1110,6 +1117,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
                     checkAndUpdateLastMessage(editedMessage, false)
                 },
                 onMessagesRead: (messageReceipt: any) => {
+                    refreshUnreadMessageCount()
                     updateMessageReceipt(messageReceipt);
                 },
                 onMessagesDelivered: (messageReceipt: any) => {
@@ -1293,6 +1301,14 @@ export const CometChatConversations = (props: ConversationInterface) => {
         }
     }, []);
 
+    const getAvatarURL = (conversationType, conversationWith) => {
+        if (conversationType == 'group') {
+            return conversationWith['icon'] ? conversationWith['icon'] : privateGroupIcon
+        } else {
+            return conversationWith['avatar']
+        }
+    }
+
     const ConversationItemView = ({ item: conversation }: any) => {
         if (!conversation) return null;
         //custom view check
@@ -1301,15 +1317,8 @@ export const CometChatConversations = (props: ConversationInterface) => {
         const { conversationWith, conversationType } = conversation;
         const lastMessage = CometChatConversationUtils.getLastMessage(conversation);
         const { name, type, conversationId } = conversationWith || {};
-        let image!: ImageType, backgroundColor!: string, avatarIcon = conversationWith[conversationType == "group" ? 'icon' : "avatar"];
-        if (type == GroupTypeConstants.password) {
-            image = props?.protectedGroupIcon || passwordGroupIcon;
-            backgroundColor = PASSWORD_GROUP_COLOR;
-        }
-        if (type == GroupTypeConstants.private) {
-            image = props?.privateGroupIcon || privateGroupIcon;
-            backgroundColor = PRIVATE_GROUP_COLOR;
-        }
+        let image: ImageType, backgroundColor: string, avatarIcon = getAvatarURL(conversationType, conversationWith);
+
         if (conversationWith.status == "online") {
             backgroundColor = theme.palette.getSuccess();
         }
@@ -1351,6 +1360,7 @@ export const CometChatConversations = (props: ConversationInterface) => {
                     }
                 })
             }}
+            separatorColor={conversationsStyle?.separatorColor}
         />
     }
 

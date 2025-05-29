@@ -37,7 +37,7 @@ interface MessageTemplateInterface {
      * @param messageObject - The message object.
      * @returns The JSX element representing the bottom view.
      */
-    BottomView?: (messageObject: CometChat.BaseMessage, alignment?: MessageBubbleAlignmentType) => JSX.Element | null,
+    // BottomView?: (messageObject: CometChat.BaseMessage, alignment?: MessageBubbleAlignmentType) => JSX.Element | null,
 
     /**
      * The header view of the message template.
@@ -103,7 +103,7 @@ export class CometChatMessageTemplate implements MessageTemplateInterface {
      * @param messageObject - The message object.
      * @returns The JSX element representing the bottom view.
      */
-    BottomView?: (messageObject: CometChat.BaseMessage, alignment?: MessageBubbleAlignmentType) => JSX.Element | null;
+    // BottomView?: (messageObject: CometChat.BaseMessage, alignment?: MessageBubbleAlignmentType) => JSX.Element | null;
     /**
      * The header view of the message template.
      * @param messageObject - The message object.
@@ -142,7 +142,7 @@ export class CometChatMessageTemplate implements MessageTemplateInterface {
         category = "MESSAGE",
         type = CometChat.MESSAGE_TYPE.TEXT,
         ContentView,
-        BottomView,
+        // BottomView,
         BubbleView,
         HeaderView,
         StatusInfoView,
@@ -152,7 +152,7 @@ export class CometChatMessageTemplate implements MessageTemplateInterface {
         this.category = category;
         this.type = type;
         this.ContentView = ContentView;
-        this.BottomView = BottomView;
+        // this.BottomView = BottomView;
         this.BubbleView = BubbleView;
         this.HeaderView = HeaderView;
         this.StatusInfoView = StatusInfoView;

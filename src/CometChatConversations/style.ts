@@ -4,8 +4,8 @@ export const Style = StyleSheet.create({
     container: {
         width: "100%",
         height: "100%",
-        backgroundColor: "white",
-        borderRadius: 0,
+        // backgroundColor: "white",
+        // borderRadius: 0,
     },
     dialogContainer: {
         flex: 1,

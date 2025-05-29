@@ -123,27 +123,23 @@ export const CometChatMessageInput = (
   } = props;
 
   return (
-    <View style={{ backgroundColor: style?.inputBackground ?? theme.palette.getAccent100(), marginHorizontal: 8, borderRadius: 8 }}>
+    <View style={{ backgroundColor: style.inputBackground ?? theme.palette.secondary, borderTopWidth : 1, borderTopColor : '#DBDBDB' }}>
       <TextInput
         ref={messageInputRef}
         style={[
           styles.textInput,
           {
-            color: style?.textColor ?? theme.palette.getAccent(),
+            color: style?.textColor ?? theme.palette.getAccent200(),
             maxHeight: maxHeight ?? 25 * 3,
           },
           text?.length
-            ? style?.textFont ?? theme.typography.body
-            : style?.placeholderTextFont ?? theme.typography.body,
+          ? style?.textFont ?? theme.typography.subtitle1
+          : style?.placeholderTextFont ?? theme.typography.subtitle1,
         ] as TextInputStyle}
         onChangeText={onChangeText}
-        placeholderTextColor={
-          style?.placeholderTextColor
-            ? style?.placeholderTextColor
-            : theme.palette.getAccent600()
-        }
+        placeholderTextColor={'#999999'}
         multiline
-        textAlignVertical="top"
+        textAlignVertical="center"
         placeholder={placeHolderText}
         onSelectionChange={onSelectionChange}
       >
@@ -153,11 +149,10 @@ export const CometChatMessageInput = (
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          paddingHorizontal: 6,
+          paddingHorizontal: 4,
           borderTopWidth: 1,
-          borderTopColor: style?.dividerTint
-            ? style.dividerTint
-            : theme.palette.getAccent200(),
+          borderTopColor: '#DBDBDB',
+          paddingTop : 4
         }}
       >
         <View style={{ flexDirection: 'row' }}>

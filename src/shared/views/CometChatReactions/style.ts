@@ -10,7 +10,7 @@ export const Styles = StyleSheet.create({
   reactionListStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 12,
+    fontSize: 10,
     color: 'black',
     marginVertical: 0,
     padding: 0,
@@ -34,6 +34,7 @@ export const Styles = StyleSheet.create({
     marginRight: 2,
     // marginBottom: 5,
     borderRadius: 20,
+    marginTop : -2
   },
   reactionCountStyle: {
     paddingRight: 2,

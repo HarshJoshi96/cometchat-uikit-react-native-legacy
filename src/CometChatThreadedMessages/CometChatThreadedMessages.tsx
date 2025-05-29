@@ -276,13 +276,13 @@ export const CometChatThreadedMessages = (
           style={[
             styles.actionViewContainer,
             {
-              borderColor: theme.palette.getAccent200(),
+              borderColor: theme.palette.getAccent300(),
             },
           ]}
         >
           <Text
             style={[
-              theme.typography.text1,
+              theme.typography.name,
               {
                 color: theme.palette.getAccent600(),
               },
@@ -333,10 +333,11 @@ export const CometChatThreadedMessages = (
           style={{
             width: '100%',
             height:
-              keyboardHeight -
-              (Number.isInteger(commonVars.safeAreaInsets.bottom)
-                ? commonVars.safeAreaInsets.bottom as number
-                : 35),
+              keyboardHeight
+              // -
+              // (Number.isInteger(commonVars.safeAreaInsets.bottom)
+              //   ? commonVars.safeAreaInsets.bottom as number
+              //   : 35),
           }}
         />
       )}

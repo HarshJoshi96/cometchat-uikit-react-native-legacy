@@ -174,6 +174,12 @@ export interface CometChatMessageHeaderInterface {
    * To pass custom styling for tailViewContainerStyle in list item
    */
   tailViewContainerStyle?: StyleProp<ViewStyle>;
+    /**
+   *
+   * @type {Function}
+   *  Function which will trigger when user press on header
+   */
+    onHeaderPresses?: () => void;
 }
 
 
@@ -205,11 +211,12 @@ export const CometChatMessageHeader = (
     headViewContainerStyle,
     bodyViewContainerStyle,
     tailViewContainerStyle,
+    onHeaderPresses,
   } = props;
 
   const _avatarStyle = new AvatarStyle({
-    backgroundColor: theme?.palette?.getAccent600(),
-    nameTextColor: theme?.palette?.getAccent(),
+    backgroundColor: theme.palette.getPrimary(),
+    nameTextColor: theme.palette.getSecondary(),
     nameTextFont: theme?.typography.body,
     ...props?.avatarStyle
   });
@@ -264,7 +271,7 @@ export const CometChatMessageHeader = (
               color:
                 style?.typingIndicatorTextColor ?? theme.palette.getAccent600(),
             },
-            style?.typingIndicatorTextFont ?? theme.typography.text1,
+            style?.typingIndicatorTextFont ?? theme.typography.subtitle1,
           ] as TextStyle}
         >
           {typingText}
@@ -273,10 +280,10 @@ export const CometChatMessageHeader = (
     if (disableUsersPresence) return null;
     return (
       <Text
-        style={[
-          { color: style?.subtitleTextColor ?? theme.palette.getAccent600() },
-          style?.subtitleTextFont ?? theme.typography.text1,
-        ] as TextStyle}
+      style={[
+          { color: '#999999' },
+        style.subtitleTextFont ?? theme.typography.subtitle1,
+      ]}
       >
         {receiverTypeRef.current === CometChat.RECEIVER_TYPE.GROUP &&
           (groupObj?.['membersCount'] || groupObj?.['membersCount'] === 0)
@@ -356,7 +363,7 @@ export const CometChatMessageHeader = (
     kickedBy,
     kickedFrom,
   }: any) => {
-    setGroupObj(kickedFrom);
+    kickedFrom && setGroupObj(kickedFrom);
   };
   const handleGroupMemberBanned = ({
     message,
@@ -364,7 +371,7 @@ export const CometChatMessageHeader = (
     kickedBy,
     kickedFrom,
   }: any) => {
-    setGroupObj(kickedFrom);
+    kickedFrom && setGroupObj(kickedFrom);
   };
   const handleGroupMemberAdded = ({
     addedBy,
@@ -372,10 +379,10 @@ export const CometChatMessageHeader = (
     usersAdded,
     userAddedIn,
   }: any) => {
-    setGroupObj(userAddedIn);
+    userAddedIn && setGroupObj(userAddedIn);
   };
   const handleOwnershipChanged = ({ group, newOwner, message }: any) => {
-    setGroupObj(group);
+    group && setGroupObj(group);
   };
 
   useEffect(() => {
@@ -413,18 +420,19 @@ export const CometChatMessageHeader = (
             id={user ? user.getUid() : groupObj ? groupObj.getGuid() : ''}
             title={user ? user.getName() : groupObj ? groupObj.getName() : ''}
             avatarName={user ? user.getName() : groupObj ? groupObj.getName() : ''}
-            avatarURL={user ? user.getAvatar() ? { uri: user.getAvatar() } : undefined : groupObj ? groupObj.getIcon() ? { uri: groupObj.getIcon() } : undefined : undefined}
+            onPress={onHeaderPresses}
+            avatarURL={user ? user.getAvatar() ? { uri: user.getAvatar() } : undefined : groupObj ? groupObj.getIcon() ? { uri: groupObj.getIcon() } : privateGroupIcon : undefined}
             SubtitleView={
               SubtitleView
                 ? () => (
-                  <SubtitleView
-                    {...(user
-                      ? { user }
-                      : groupObj
+                    <SubtitleView
+                      {...(user
+                        ? { user }
+                        : groupObj
                         ? { group: groupObj }
                         : {})}
-                  />
-                )
+                    />
+                  )
                 : SubtitleViewFnc
             }
             bodyViewContainerStyle={{
@@ -432,9 +440,8 @@ export const CometChatMessageHeader = (
               ...(bodyViewContainerStyle as ViewStyle),
             }}
             listItemStyle={{
-              titleFont: { fontWeight: '700' },
-              backgroundColor: style?.backgroundColor,
               ...listItemStyle,
+              ...theme.typography.body,
             }}
             statusIndicatorColor={
               disableUsersPresence
@@ -459,21 +466,21 @@ export const CometChatMessageHeader = (
                 }
                 : { ...statusIndicatorStyle }) as ViewProps
             }
-            statusIndicatorIcon={
-              groupObj
-                ? groupObj.getType() === CometChat.GROUP_TYPE.PASSWORD
-                  ? protectedGroupIcon
-                    ? protectedGroupIcon
-                    : ICONS.PROTECTED
-                  : groupObj.getType() === CometChat.GROUP_TYPE.PRIVATE
-                    ? privateGroupIcon
-                      ? privateGroupIcon
-                        ? privateGroupIcon
-                        : ICONS.PRIVATE
-                      : null
-                    : null
-                : null
-            }
+            // statusIndicatorIcon={
+            //   groupObj
+            //     ? groupObj.getType() === CometChat.GROUP_TYPE.PASSWORD
+            //       ? protectedGroupIcon
+            //         ? protectedGroupIcon
+            //         : ICONS.PROTECTED
+            //       : groupObj.getType() === CometChat.GROUP_TYPE.PRIVATE
+            //         ? privateGroupIcon
+            //           ? privateGroupIcon
+            //             ? privateGroupIcon
+            //             : ICONS.PRIVATE
+            //           : null
+            //         : null
+            //     : null
+            // }
             TailView={
               AppBarOptions
                 ? () => (

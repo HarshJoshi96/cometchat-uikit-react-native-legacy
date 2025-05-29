@@ -223,7 +223,7 @@ export const CometChatMessageInformation = (props: CometChatMessageInformationIn
         if (LoadingStateView)
             return <LoadingStateView />
         return <View style={[Style.viewContainer]}>
-            <ActivityIndicator size={"large"} color={theme.palette.getPrimary()} />
+            <ActivityIndicator size={"large"} color={'black'} />
         </View>
     }
 
@@ -265,7 +265,7 @@ export const CometChatMessageInformation = (props: CometChatMessageInformationIn
             Style.container,
             border
         ] as ViewProps}>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", alignItems : 'center' }}>
                 <TouchableOpacity onPress={onBack}>
                     <Image
                         source={backIcon}
@@ -274,6 +274,7 @@ export const CometChatMessageInformation = (props: CometChatMessageInformationIn
                             width: 24,
                             tintColor: theme.palette.getPrimary()
                         }}
+                        resizeMode='contain'
                     />
                 </TouchableOpacity>
                 <View style={{ flex: 1, alignItems: "center" }}>
@@ -281,9 +282,9 @@ export const CometChatMessageInformation = (props: CometChatMessageInformationIn
                 </View>
             </View>
 
-            <View>
+            {/* <View>
                 <Text style={{ color: dividerTint || theme.palette.getAccent500(), ...theme.typography.text1 } as TextStyle}>{localize("MESSAGE")}</Text>
-            </View>
+            </View> */}
             <View style={[Style.divider, { backgroundColor: dividerTint || theme.palette.getAccent200() }]} />
             <View style={Style.msgBubbleContainer}>
                 <ScrollView>

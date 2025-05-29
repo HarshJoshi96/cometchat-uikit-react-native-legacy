@@ -45,7 +45,7 @@ export const CometChatTabs = (props: CometChatTabsInterface) => {
     },[props.tabs]);
 
     useEffect(() => {
-        loadActiveTab();
+          loadActiveTab();
     }, [])
 
     const getStyleFor = (tab: TabItem) => {
@@ -68,8 +68,7 @@ export const CometChatTabs = (props: CometChatTabsInterface) => {
             titleTextFont: style?.tabTitleTextFont || theme?.typography.body,
             activeIconTint: theme?.palette.getPrimary(),
             activeTitleTextColor: style?.activeTabTitleTextColor || theme?.palette.getSecondary(),
-            activeBackgroundColor: style?.activeTabBackgroundColor || theme?.palette.getPrimary(),
-            iconTint: theme?.palette.getAccent600(),
+            activeBackgroundColor: style?.activeTabBackgroundColor || theme?.palette.getPrimary(),            iconTint: theme?.palette.getAccent600(),
             activeTitleTextFont: theme?.typography.body,
             borderRadius: style?.borderRadius,
             ...tab.style
@@ -80,7 +79,7 @@ export const CometChatTabs = (props: CometChatTabsInterface) => {
             width: tabs.length <= 4 ? (screenWidth - 30) / tabs.length : width,
             border: tab.isActive ? style?.activeTabBorder : undefined,
             borderRadius: style?.borderRadius,
-            backgroundColor: tab.isActive ? activeBackgroundColor : "transparent",
+            backgroundColor: tab.isActive ? activeBackgroundColor : style?.backgroundColor,
             tintColor: tab.isActive ? activeIconTint : iconTint,
             color: tab.isActive ? activeTitleTextColor : titleTextColor,
             titleFont: tab.isActive ? activeTitleTextFont : titleTextFont,

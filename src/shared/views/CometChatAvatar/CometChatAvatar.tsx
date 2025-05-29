@@ -27,8 +27,8 @@ export const CometChatAvatar = (props: CometChatAvatarProps) => {
   const {theme} = useContext<CometChatContextType>(CometChatContext);
 
   const defaultStyleProps = new AvatarStyle({
-    backgroundColor : theme.palette.getAccent400(),
-    nameTextColor : theme.palette.getAccent800(),
+    backgroundColor : theme.palette.getPrimary(),
+    nameTextColor : theme.palette.getSecondary(),
     nameTextFont : theme.typography.body,
   });
   
@@ -58,7 +58,7 @@ export const CometChatAvatar = (props: CometChatAvatarProps) => {
             Styles.textStyle,
             {
               borderRadius: style.borderRadius,
-              color: style.nameTextColor,
+              // color: style.nameTextColor,
             },
             style.nameTextFont ?? {},
           ] as TextStyle}
@@ -83,8 +83,11 @@ export const CometChatAvatar = (props: CometChatAvatarProps) => {
               borderRadius: style.borderRadius,
               backgroundColor: style.backgroundColor,
               borderWidth: style.border?.borderWidth,
+              height :  '100%',
+              width : '100%'
             },
           ]}
+          resizeMode='contain'
         />
       );
     }
@@ -97,7 +100,7 @@ export const CometChatAvatar = (props: CometChatAvatarProps) => {
         {
           height: style.height,
           width: style.width,
-          backgroundColor: style.backgroundColor,
+          backgroundColor: theme.palette.getPrimary(),
           borderRadius: style.borderRadius,
         } as ViewProps,
         style.border ?? {},

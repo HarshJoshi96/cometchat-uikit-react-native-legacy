@@ -15,5 +15,5 @@ export type {
   CometChatUsersInterface,
   CometChatUsersActionsInterface,
   UsersConfigurationInterface,
-  UsersStyleInterface
+  UsersStyleInterface,
 };

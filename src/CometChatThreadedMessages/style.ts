@@ -15,9 +15,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    paddingHorizontal: 10,
+    borderTopWidth: .5,
+    borderBottomWidth: .5,
+    paddingHorizontal: 20,
   },
   actionIcon: {
     height: 25,

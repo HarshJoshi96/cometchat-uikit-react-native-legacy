@@ -47,9 +47,9 @@ export class StickersExtensionDecorator extends DataSourceDecorator {
         options: (loggedInuser, message, group) => {
           return ChatConfigurator.dataSource.getMessageOptions(loggedInuser, message, group);
         },
-        BottomView: (message: CometChat.BaseMessage, alignment?: MessageBubbleAlignmentType) => {
-            return ChatConfigurator.dataSource.getBottomView(message, alignment);
-        }
+        // BottomView: (message: CometChat.BaseMessage, alignment?: MessageBubbleAlignmentType) => {
+        //     return ChatConfigurator.dataSource.getBottomView(message, alignment);
+        // }
       })
     );
     return templates;

@@ -5,7 +5,8 @@ export const Style = StyleSheet.create({
     optionTextStyle: {
         textAlign: "center",
         padding: 8,
-        width: "100%"
+        width: "100%",
+        fontSize : 14
     },
     changeDialogContainer: {
         height: "100%",

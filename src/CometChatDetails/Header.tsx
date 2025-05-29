@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Platform } from 'react-native';
 import React from 'react';
 import { ICONS } from './resources';
 
@@ -19,14 +19,13 @@ const Header = (props: any) => {
             source={closeButtonIcon}
             style={{
               tintColor: closeIconTint ?? 'rgb(51, 153, 255)',
-              height: 24,
-              width: 24,
             }}
+            resizeMode='contain'
           />
         </TouchableOpacity>
       )}
-      <Text style={[styles.headingText, titleStyle]}>{title}</Text>
-    </View>
+      <Text style={[styles.headingText,titleStyle]}>{title}</Text>
+      </View>
   );
 };
 
@@ -34,9 +33,25 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 56,
+    elevation: 2,
+    shadowColor: Platform.OS == 'android' ? '#000' : 'rgba(153, 153, 153, 1)',
+    height: 120,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    backgroundColor: 'white',
+    zIndex: 1,
+    paddingTop:60,
+    paddingBottom: 24,
+    shadowOffset: {
+    width: 0,
+    height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    marginLeft : -20,
+    paddingLeft : 20
   },
   iconContainer: { paddingRight: 15 },
-  headingText: { fontSize: 20, fontWeight: '600', color: '#000' },
+  headingText: { fontSize: 20, fontWeight: '600', color: '#247BA0' },
 });
 export default Header;

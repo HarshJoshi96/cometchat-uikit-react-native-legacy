@@ -56,7 +56,7 @@ import {
   SingleSelectElement,
   TextInputElement,
   URLNavigationAction,
-  DateTimeElement,
+  // DateTimeElement,
 } from "./modals";
 import { CometChatLocalize, localize } from "./resources/CometChatLocalize";
 import {
@@ -187,9 +187,9 @@ import {
   SuggestionItem,
   SuggestionListConfiguration,
   SuggestionListConfigurationInterface,
-  CometChatDateTimePicker,
-  CometChatDateTimePickerInterface,
-  DatePickerStyleInterface,
+  // CometChatDateTimePicker,
+  // CometChatDateTimePickerInterface,
+  // DatePickerStyleInterface,
 } from "./views";
 
 import {
@@ -328,8 +328,8 @@ export {
   CometChatSuggestionList,
   SuggestionItem,
   SuggestionListConfiguration,
-  CometChatDateTimePicker,
-  DateTimeElement,
+  // CometChatDateTimePicker,
+  // DateTimeElement,
 };
 export type {
   ActionItemInterface,
@@ -406,6 +406,6 @@ export type {
   QuickReactionsStyleInterface,
   CometChatSuggestionListInterface,
   SuggestionListConfigurationInterface,
-  CometChatDateTimePickerInterface,
-  DatePickerStyleInterface,
+  // CometChatDateTimePickerInterface,
+  // DatePickerStyleInterface,
 };

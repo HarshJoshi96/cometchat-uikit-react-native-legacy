@@ -426,7 +426,7 @@ export const CometChatSchedulerBubble = memo(
       }
     };
 
-    const getQuickSelectSlots = async (date: Date, shouldViewNext = true) => {
+    const getQuickSelectSlots = async (date:Date, shouldViewNext = true) => {
       let day = DateTime.fromJSDate(date).toFormat("EEEE");
       let dateString = DateTime.fromJSDate(date).toFormat(dateFormats.date);
 

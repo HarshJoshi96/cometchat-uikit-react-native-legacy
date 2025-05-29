@@ -97,7 +97,7 @@ export class CommonUtils {
           id['guid'] = (message.getReceiver() as any).guid;
         }
         if (message.getParentMessageId() && message.getParentMessageId() !== 0) {
-          id['parentMessageId'] = message.getParentMessageId();
+            id['parentMessageId'] = message.getParentMessageId();
         }
         return id;
     }

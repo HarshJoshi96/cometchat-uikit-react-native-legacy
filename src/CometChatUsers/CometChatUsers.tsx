@@ -92,7 +92,7 @@ export interface CometChatUsersInterface
    * Function which have {item: userObject, index: number } as prop and returns a JSX Element to render in place of tail view in list item
    *
    */
-  ListItemView?: (item: any) => JSX.Element | null;
+  ListItemView?: ListRenderItem<CometChat.User>;
 }
 
 export interface CometChatUsersActionsInterface
@@ -132,7 +132,7 @@ export const CometChatUsers = React.forwardRef<
     titleFont: theme?.typography.title1,
     loadingIconTint: theme?.palette.getPrimary(),
     ...usersStyle
-});
+  });
   
   useImperativeHandle(ref, () => {
     return {
@@ -153,26 +153,26 @@ export const CometChatUsers = React.forwardRef<
       new CometChat.UserListener({
         onUserOnline: (onlineUser: any) => {
           /* when someuser/friend comes online, user will be received here */
-          userRef.current?.updateList(onlineUser);
+          userRef.current.updateList(onlineUser);
         },
         onUserOffline: (offlineUser: any) => {
           /* when someuser/friend went offline, user will be received here */
-          userRef.current?.updateList(offlineUser);
+          userRef.current.updateList(offlineUser);
         },
       })
     );
     return () => CometChat.removeUserListener(userListenerId);
   }, []);
 
-  const handleccUserBlocked = ({ user }: any) => {
-    userRef.current?.updateList({
+  const handleccUserBlocked = ({ user }) => {
+    userRef.current.updateList({
       ...user,
       blockedByMe: true,
       hasBlockedMe: true,
     });
   };
-  const handleccUserUnBlocked = ({ user }: any) => {
-    userRef.current?.updateList({
+  const handleccUserUnBlocked = ({ user }) => {
+    userRef.current.updateList({
       ...user,
       blockedByMe: false,
       hasBlockedMe: false,
@@ -181,8 +181,8 @@ export const CometChatUsers = React.forwardRef<
 
   useEffect(() => {
     CometChatUIEventHandler.addUserListener(userListenerId, {
-      ccUserBlocked: (item: any) => handleccUserBlocked(item),
-      ccUserUnBlocked: (item: any) => handleccUserUnBlocked(item),
+      ccUserBlocked: (item) => handleccUserBlocked(item),
+      ccUserUnBlocked: (item) => handleccUserUnBlocked(item),
     });
     return () => {
       CometChatUIEventHandler.removeUserListener(userListenerId);
@@ -192,12 +192,12 @@ export const CometChatUsers = React.forwardRef<
   return (
     <View style={{ flex: 1, width: '100%', height: '100%' }}>
       <CometChatList
+        listItemKey="uid"
         ref={userRef}
         title={'Users'}
         requestBuilder={usersRequestBuilder}
         listStyle={{ ..._usersStyle, background: _usersStyle.backgroundColor }}
-        {...newProps as CometChatListProps}
-        listItemKey="uid"
+        {...newProps}
       />
     </View>
   );

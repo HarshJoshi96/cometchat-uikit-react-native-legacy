@@ -126,6 +126,7 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
     onCreatePress,
     onError,
     onBack,
+    onCreateSuccess
   } = props;
   const [password, setPassword] = useState('');
   const [groupType, setGroupType] = React.useState(GroupTypeConstants.private);

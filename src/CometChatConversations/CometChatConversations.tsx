@@ -612,9 +612,52 @@ export const CometChatConversations = (props: ConversationInterface) => {
      * When a text message / media message / custom message is received
      */
     const messageEventHandler = (...args: any[]) => {
-        let message = args[0];
-        !disableReceipt && markMessageAsDelivered(message);
-        updateLastMessage(message);
+       let message = args[0];
+  let builderTags = conversationsRequestBuilder ? conversationsRequestBuilder.build().getUserTags() : [];
+  const sender = message.getSender().getUid();
+  const messageReceiverType = message.getReceiverType();
+  const receiverId = messageReceiverType === 'user' ? sender : message.getReceiverId();
+  let existingConversation = null;
+  if (messageReceiverType === 'user') {
+    existingConversation = conversationListRef.current?.getListItem(`${receiverId}_user_${loggedInUser.current?.uid}`) as unknown as CometChat.Conversation;
+    if (!existingConversation) {
+      existingConversation = conversationListRef.current?.getListItem(`${loggedInUser.current?.uid}_user_${receiverId}`) as unknown as CometChat.Conversation;
+    }
+  } else {
+    existingConversation = conversationListRef.current?.getListItem(`group_${receiverId}`) as unknown as CometChat.Conversation;
+  }
+  if (existingConversation) {
+    const conversationWith = existingConversation.getConversationWith();
+    const conversationWithTags = conversationWith?.getTags();
+    if (builderTags && builderTags.length > 0) {
+      if (!conversationWithTags || conversationWithTags.length === 0) {
+        return;
+      }
+      const hasMatchingTag = conversationWithTags.some((tag: string) => builderTags.includes(tag));
+      if (!hasMatchingTag) {
+        return; 
+      }
+    }
+    !disableReceipt && markMessageAsDelivered(message);
+    updateLastMessage(message);
+  } else {
+    if (builderTags && builderTags.length > 0) {
+      if (messageReceiverType === 'user') {
+        const senderTags = message.getSender()?.getTags();
+        if (!senderTags || senderTags.length === 0) {
+          return;
+        }
+        const hasMatchingTag = senderTags.some((tag: string) => builderTags.includes(tag));
+        if (!hasMatchingTag) {
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+    !disableReceipt && markMessageAsDelivered(message);
+    updateLastMessage(message);
+  }
     }
 
     /**

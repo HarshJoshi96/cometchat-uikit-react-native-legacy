@@ -217,6 +217,7 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
         break;
     }
     let group = new CometChat.Group(guid, name, type, password);
+    group.setTags(['employee'])
     Keyboard.dismiss()
     CometChat.createGroup(group)
       .then((group: any) => {
@@ -292,6 +293,11 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
       </View>
     );
   };
+
+  const AppBarOption = () => {
+    return (
+      <View />
+    )}
   return (
     <>
     <View
@@ -394,12 +400,14 @@ export const CometChatCreateGroup = (props: CometChatCreateGroupInterface) => {
       )}
       <ErrorView />
     </View>
+    
     {modalVisible &&
       <CometChatAddMembers
+      AppBarOptions={AppBarOption}
       group={groupDetails}
       onBack={()=>setModalVisible(false)}
       backButtonIcon={closeIcon}
-      usersRequestBuilder={new CometChat.UsersRequestBuilder().setLimit(30).sortBy('name')}
+      usersRequestBuilder={new CometChat.UsersRequestBuilder().setLimit(30).setTags(['employee']).withTags(true)}
       onSuccess={onSuccess}
       selectionIcon={createIcon}
     />

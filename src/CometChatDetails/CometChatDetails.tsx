@@ -380,7 +380,9 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
   const [loggedInUser, setLoggedInUser] = useState<CometChat.User | any>();
   const [currentScreen, setCurrentScreen] = useState<string | null>(null);
   const [modalDetails, setModalDetails] = useState<ModalDetailsInterface>();
-
+const usersRequestBuilder = new CometChat.UsersRequestBuilder()
+ .setLimit(30)
+ .setTags(['employee']);
   const handleViewMembers = () => {
     setCurrentScreen(ComponentIds.VIEW_MEMBERS);
   };
@@ -763,6 +765,7 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
 
   useEffect(() => {
     getTemplates();
+    
   }, []);
 
   const handleUserStatus = (user: any) => {
@@ -848,6 +851,9 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
     return (
       <CometChatGroupsMembers
         //Note: Please fix types of CometChatGroupsMembers
+        AppBarOptions={()=>{
+          return(<View></View>)
+        }}
         group={groupDetails}
         onBack={handleBackButtonClick}
         selectionMode="none"
@@ -865,6 +871,11 @@ export const CometChatDetails = (props: CometChatDetailsInterface) => {
   if (currentScreen === ComponentIds.ADD_MEMBERS)
     return (
       <CometChatAddMembers
+       AppBarOptions={()=>{
+          return(<View/>)
+        }}
+      usersRequestBuilder={usersRequestBuilder}
+        
         group={groupDetails}
         onBack={handleBackButtonClick}
         backButtonIcon={closeButtonIcon}

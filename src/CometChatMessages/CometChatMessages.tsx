@@ -47,6 +47,7 @@ export interface CometChatMessagesInterface {
     customSoundForOutgoingMessages?: string,
     messagesStyle?: MessageStyleInterface,
     AuxilaryAppBarOptions?: ({ user, group }: { user?: CometChat.User, group?: CometChat.Group }) => JSX.Element,
+    disableTap?:boolean
 }
 
 export const CometChatMessages = (props: CometChatMessagesInterface) => {
@@ -69,7 +70,8 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
         messagesStyle,
         threadedMessagesConfiguration,
         MessageListView,
-        hideDetails
+        hideDetails,
+        disableTap
     } = props;
 
     const { theme } = useContext(CometChatContext);
@@ -257,7 +259,7 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
             showComponent == ComponentNames.Details &&
             <View style={[Style.stackMe, { backgroundColor, borderRadius }]}>
                 {/* showComponent == ComponentNames.Details &&
-             <View style={{flex: 1}}> */}
+            //  <View style={{flex: 1}}> */}
                 <CometChatDetails
                     {...(detailsData.current.user
                         ? {user: detailsData.current.user}
@@ -266,11 +268,14 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                         : {})
                     }
                     {..._detailsConfiguration}
+                    
                         onBack={_detailsConfiguration.onBack || setShowComponent.bind(this, ComponentNames.Default)}
                         closeButtonIcon={_headerConfiguration?.backButtonIcon}
                         addMembersConfiguration={{selectionIcon : _headerConfiguration?.selectionIcon, ..._detailsConfiguration?.addMembersConfiguration}}
                         transferOwnershipConfiguration={{selectionIcon : _headerConfiguration?.selectionIcon}}
                         privateGroupIcon={_headerConfiguration?.privateGroupIcon}
+                        
+                    
     
                 />
             </View>
@@ -323,7 +328,7 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                             {..._headerConfiguration}
                             onHeaderPresses={() => {
                                 detailsData.current = { user: user, group: group }
-                                setShowComponent(ComponentNames.Details);
+                                 !disableTap && setShowComponent(ComponentNames.Details);
                             }}
                         />
                         </View>

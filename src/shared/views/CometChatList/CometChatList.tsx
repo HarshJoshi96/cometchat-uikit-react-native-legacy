@@ -786,7 +786,7 @@ export const CometChatList = React.forwardRef<
         ] as ViewProps
       }
     >
-      <Header
+     {AppBarOptions && (<Header
         backButtonIcon={backButtonIcon}
         showBackButton={showBackButton}
         onBack={onBack}
@@ -818,7 +818,7 @@ export const CometChatList = React.forwardRef<
           listStyle.searchBackground ?? theme.palette.getAccent100()
         }
         CreateGroupView = {CreateGroupView}
-      />
+      />)} 
       <View style={styles.container}>{getMessageContainer()}</View>
     </View>
   );

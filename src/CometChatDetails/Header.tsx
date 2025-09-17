@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    elevation: 2,
+    elevation: 20,
     shadowColor: Platform.OS == 'android' ? '#000' : 'rgba(153, 153, 153, 1)',
     height: 120,
     borderBottomRightRadius: 20,

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     width: '100%',
     height : 120,
-    elevation: 2,
+    elevation: 20,
     shadowColor: Platform.OS == 'android' ? '#000' : 'rgba(153, 153, 153, 1)',
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,

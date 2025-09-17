@@ -301,7 +301,7 @@ export const CometChatMessages = (props: CometChatMessagesInterface) => {
                     MessageHeaderView ?
                         <MessageHeaderView user={userObject} group={groupObject} /> :
                         <View style={{
-                        elevation: 2,
+                        elevation: 20,
                         shadowColor: Platform.OS == 'android' ? '#000' : 'rgba(153, 153, 153, 1)',
                         height: 120,
                         borderBottomRightRadius: 20,
